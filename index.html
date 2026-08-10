@@ -1,0 +1,769 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bunpou SRS</title>
+<style>
+:root{
+  --bg:#fff9f7;--card:#fff;--text:#282323;--muted:#7d7371;--line:#eee3df;
+  --red:#dd4248;--red2:#fff0f1;--green:#269b63;--green2:#ecfaf3;
+  --shadow:0 18px 50px rgba(61,40,35,.08)
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+button,input{font:inherit}button{cursor:pointer}
+.app{width:min(1040px,calc(100% - 24px));margin:auto;padding:18px 0 60px}
+.top{display:flex;justify-content:space-between;gap:15px;align-items:center;position:sticky;top:0;z-index:10;padding:12px 0;background:rgba(255,249,247,.92);backdrop-filter:blur(12px)}
+.brand{display:flex;align-items:center;gap:11px}.logo{width:43px;height:43px;border-radius:14px;background:var(--red);color:#fff;display:grid;place-items:center;font-weight:900}
+.brand b{display:block}.brand small{color:var(--muted)}
+.nav{display:flex;gap:7px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:9px 12px;font-weight:800;color:var(--text)}
+.btn.active{background:var(--text);color:#fff;border-color:var(--text)}
+.btn.red{background:var(--red);color:#fff;border-color:var(--red)}
+.page{display:none;padding-top:18px}.page.on{display:block}
+.hero{margin:16px 0 22px}.hero h1{font-size:clamp(30px,5vw,48px);margin:0 0 8px}.hero p{color:var(--muted);line-height:1.6;margin:0;max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.item{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 7px 25px rgba(61,40,35,.035);cursor:pointer;transition:.15s}
+.item:hover{transform:translateY(-2px)}
+.item h3{margin:0 0 7px}.item p{margin:0;color:var(--muted);line-height:1.5;font-size:13px}
+.chips{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}
+.chip{padding:5px 8px;border-radius:999px;background:#f7f2f0;font-size:11px;font-weight:800;color:var(--muted)}
+.chip.red{background:var(--red2);color:var(--red)}.chip.green{background:var(--green2);color:var(--green)}
+.study{max-width:830px;margin:auto}.back{border:0;background:none;color:var(--muted);font-weight:800;padding:0;margin:8px 0 18px}
+.study h1{font-size:42px;margin:0}.meaning{color:var(--muted);font-size:18px;margin:5px 0 20px}
+.box,.example{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:12px}
+.box small{display:block;text-transform:uppercase;font-weight:900;color:var(--muted);letter-spacing:.06em;margin-bottom:7px}
+.example .jp{font-size:22px;line-height:2}.example .id{color:var(--muted);line-height:1.6;margin-top:5px}
+ruby rt{font-size:.52em;color:#6f6666}
+.sentinel{text-align:center;color:var(--muted);font-size:12px;padding:14px}
+.yomi{position:sticky;bottom:14px;text-align:center;padding:10px}
+.yomi button{border:0;border-radius:999px;background:var(--red);color:#fff;font-weight:900;padding:14px 24px;box-shadow:0 10px 25px rgba(221,66,72,.25)}
+.yomi button:disabled{opacity:.4;cursor:not-allowed}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:18px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px}
+.stat small{color:var(--muted);font-weight:900;text-transform:uppercase}.stat b{display:block;font-size:28px;margin-top:4px}
+
+.review{max-width:900px;margin:auto}.rhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.badge{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-weight:900}
+.queue{font-size:12px;color:var(--muted);font-weight:800}
+.track{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;margin-bottom:16px}
+.dot{height:7px;background:#eadfdb;border-radius:99px}.dot.on{background:var(--red)}.dot.done{background:var(--green)}
+.card{background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:44px 25px 30px;min-height:430px;display:flex;flex-direction:column;justify-content:center}
+.sentence{font-size:clamp(27px,4.8vw,45px);font-weight:720;line-height:2.05;text-align:center}
+.answer{display:inline-block;width:5em;min-width:4em;max-width:10em;border:0;border-bottom:3px solid var(--red);background:transparent;outline:0;text-align:center;font-size:.88em;font-weight:900;padding:0 3px .05em;vertical-align:baseline}
+.answer:focus{background:var(--red2)}.answer.ok{border-color:var(--green);color:var(--green);background:var(--green2)}.answer.bad{border-color:var(--red);color:var(--red);background:var(--red2)}
+.trans{text-align:center;color:#655c59;font-size:17px;line-height:1.7;margin:18px auto 0;max-width:760px}
+.trans mark{background:none;color:var(--red);font-weight:900}
+.help{text-align:center;font-size:12px;color:var(--muted);margin-top:20px}
+.feedback{display:none;text-align:center;border-top:1px solid var(--line);padding-top:18px;margin:24px auto 0;max-width:700px}
+.feedback.on{display:block}.feedback.ok{color:var(--green)}.feedback.bad{color:var(--red)}.feedback p{color:var(--muted);margin:7px 0 0}
+.next{display:none;margin:18px auto 0;border:0;border-radius:999px;background:var(--text);color:#fff;padding:11px 20px;font-weight:900}.next.on{display:block}
+.empty{background:#fff;border:1px solid var(--line);border-radius:22px;padding:50px 20px;text-align:center}
+.empty h3{margin:0 0 7px}.empty p{margin:0;color:var(--muted)}
+dialog{border:0;border-radius:21px;padding:0;width:min(620px,calc(100% - 28px));box-shadow:0 30px 80px rgba(40,25,22,.28)}
+dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
+.modal{padding:23px}.modal h2{margin:0 0 8px}.modal p{color:var(--muted);line-height:1.6}
+.actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.warn{background:var(--red2);color:#972f34;border:1px solid #ffd6d8;border-radius:14px;padding:13px;line-height:1.55}
+.hide{display:none!important}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(15px);opacity:0;background:var(--text);color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;font-weight:800;transition:.2s;z-index:50}
+.toast.on{opacity:1;transform:translateX(-50%)}
+@media(max-width:760px){.top{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.card{padding:34px 15px}.sentence{line-height:2.2}}
+@media(max-width:500px){.grid{grid-template-columns:1fr}.nav .btn{font-size:12px;padding:8px 9px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+  <div class="brand">
+    <div class="logo">文</div>
+    <div><b>Bunpou SRS</b><small>Baca → Yomimashita → Review</small></div>
+  </div>
+  <div class="nav">
+    <button class="btn active" data-page="library">Lampiran</button>
+    <button class="btn" data-page="review">SRS</button>
+    <button class="btn red" id="uploadJsonBtn">Upload JSON</button>
+    <input class="hide" id="jsonFileInput" type="file" accept=".json,application/json">
+  </div>
+</header>
+
+<section class="page on" id="library">
+  <div class="hero">
+    <h1>Lampiran Bunpou</h1>
+    <p>Lampiran dibagi berdasarkan level JLPT N1–N5. Di dalam setiap level, bunpou dikelompokkan lagi berdasarkan DAY dari file JSON.</p>
+  </div>
+  <div class="grid" id="libraryGrid"></div>
+</section>
+
+<section class="page" id="study">
+  <div class="study">
+    <button class="back" id="backBtn">← Kembali</button>
+    <h1 id="sg"></h1>
+    <div class="meaning" id="sm"></div>
+    <div class="box"><small>Fungsi</small><div id="se"></div></div>
+    <div class="box"><small>Rumus</small><div id="sf"></div></div>
+    <div id="examples"></div>
+    <div class="sentinel" id="sentinel">— akhir contoh kalimat —</div>
+    <div class="yomi"><button id="yomiBtn" disabled>読みました · Yomimashita</button></div>
+  </div>
+</section>
+
+<section class="page" id="review">
+  <div class="hero">
+    <h1>Review SRS</h1>
+    <p>Progress berada di halaman ini. Jawaban diketik langsung pada garis merah di dalam kalimat dan diperiksa dengan Enter.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><small>Total</small><b id="stTotal">0</b></div>
+    <div class="stat"><small>Yomimashita</small><b id="stRead">0</b></div>
+    <div class="stat"><small>Due</small><b id="stDue">0</b></div>
+    <div class="stat"><small>Mastered</small><b id="stMaster">0</b></div>
+  </div>
+
+  <div class="review">
+    <div class="empty hide" id="reviewEmpty">
+      <h3>Belum ada review yang jatuh tempo.</h3>
+      <p>Baca bunpou baru atau kembali saat jadwal berikutnya tiba.</p>
+    </div>
+
+    <div id="reviewArea" class="hide">
+      <div class="rhead">
+        <div class="badge" id="levelBadge"></div>
+        <div class="queue" id="queueText"></div>
+      </div>
+
+      <div class="track" id="track"></div>
+
+      <div class="card">
+        <form id="answerForm">
+          <div class="sentence" id="sentence"></div>
+        </form>
+        <div class="trans" id="translation"></div>
+        <div class="help">Ketik jawaban → Enter</div>
+        <div class="feedback" id="feedback">
+          <b id="fbTitle"></b>
+          <p id="fbText"></p>
+        </div>
+        <button class="next" id="nextBtn">Lanjut →</button>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<dialog id="startDialog">
+  <div class="modal">
+    <h2>読みました！</h2>
+    <p><b id="startName"></b> sudah selesai dibaca dan sekarang masuk ke SRS.</p>
+    <div class="actions">
+      <button class="btn" id="stayBtn">Nanti</button>
+      <button class="btn red" id="startBtn">Mulai SRS</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="retryDialog">
+  <div class="modal">
+    <h2>Kesempatan kedua</h2>
+    <div class="warn">
+      Kamu berada di <b>SRS Level 11</b>. Kesalahan pertama belum menurunkan level.
+      Kamu mendapat satu kesempatan lagi untuk soal yang sama.
+    </div>
+    <p>Jika jawaban kedua juga salah, level turun ke 10 dan kartu kembali setelah 10 menit.</p>
+    <div class="actions">
+      <button class="btn red" id="retryBtn">Coba lagi</button>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY="bunpou_data_v6";
+const PKEY="bunpou_progress_v6";
+
+const INTERVAL=[
+  4*3600000,
+  8*3600000,
+  24*3600000,
+  2*86400000,
+  4*86400000,
+  8*86400000,
+  14*86400000,
+  30*86400000,
+  60*86400000,
+  120*86400000,
+  180*86400000
+];
+
+const WRONG=10*60000;
+
+const $=id=>document.getElementById(id);
+
+let decks=load(KEY,[]);
+let prog=load(PKEY,{});
+let studyId=null;
+let due=[];
+let current=null;
+let retry11=false;
+let locked=false;
+let observer=null;
+
+function load(k,f){
+  try{
+    return JSON.parse(localStorage.getItem(k)) || f;
+  }catch{
+    return f;
+  }
+}
+
+function save(){
+  localStorage.setItem(KEY,JSON.stringify(decks));
+  localStorage.setItem(PKEY,JSON.stringify(prog));
+}
+
+function esc(s){
+  return String(s??"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;");
+}
+
+function norm(s){
+  return String(s??"")
+    .trim()
+    .replace(/\s+/g,"")
+    .replace(/[〜～]/g,"");
+}
+
+function gp(id){
+  return prog[id] || {studied:false,level:0,dueAt:null,q:0};
+}
+
+function sp(id,p){
+  prog[id]=p;
+  save();
+}
+
+function deck(id){
+  return decks.find(x=>x.id===id);
+}
+
+function isDue(d){
+  const p=gp(d.id);
+  return p.studied && p.level<12 && (!p.dueAt || p.dueAt<=Date.now());
+}
+
+function go(name){
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));
+  $(name).classList.add("on");
+  document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===name));
+
+  if(name==="library") renderLibrary();
+  if(name==="review"){
+    renderStats();
+    startReview();
+  }
+
+  scrollTo(0,0);
+}
+
+document.querySelectorAll("[data-page]").forEach(b=>{
+  b.onclick=()=>go(b.dataset.page);
+});
+
+function ruby(seg){
+  if(seg.blank){
+    return '<input id="answer" class="answer" lang="ja" autocomplete="off" spellcheck="false">';
+  }
+  if(seg.reading){
+    return `<ruby>${esc(seg.text)}<rt>${esc(seg.reading)}</rt></ruby>`;
+  }
+  return esc(seg.text);
+}
+
+function segs(a){
+  return (a||[]).map(ruby).join("");
+}
+
+function renderLibrary(){
+  const levels=["N1","N2","N3","N4","N5"];
+  const w=$("libraryGrid");
+  w.innerHTML="";
+
+  levels.forEach(level=>{
+    const items=decks.filter(d=>String(d.level||"").toUpperCase()===level);
+    const days=[...new Set(items.map(d=>normalizeDay(d.day)))].filter(v=>v!=="" && v!==null);
+    const studied=items.filter(d=>gp(d.id).studied).length;
+    const dueCount=items.filter(isDue).length;
+
+    const x=document.createElement("div");
+    x.className="item";
+    x.innerHTML=`
+      <h3>📁 ${level}</h3>
+      <p>${items.length} bunpou · ${days.length} DAY · ${studied} sudah dibaca</p>
+      <div class="chips">
+        ${dueCount?`<span class="chip red">${dueCount} due</span>`:""}
+        <span class="chip">${items.length?"Buka level":"Kosong"}</span>
+      </div>
+    `;
+    x.onclick=()=>openLevel(level);
+    w.appendChild(x);
+  });
+}
+
+function normalizeDay(day){
+  if(day===undefined || day===null || String(day).trim()==="") return "";
+  const raw=String(day).trim();
+  const match=raw.match(/\d+/);
+  return match ? Number(match[0]) : raw;
+}
+
+function dayLabel(day){
+  if(typeof day==="number") return `DAY ${day}`;
+  return `DAY ${String(day).replace(/^day\s*/i,"")}`;
+}
+
+function openLevel(level){
+  const items=decks.filter(d=>String(d.level||"").toUpperCase()===level);
+  const dayMap={};
+
+  items.forEach(d=>{
+    const day=normalizeDay(d.day);
+    if(day==="") return;
+    (dayMap[day]??=[]).push(d);
+  });
+
+  const dayKeys=Object.keys(dayMap).sort((a,b)=>{
+    const na=Number(a), nb=Number(b);
+    if(!Number.isNaN(na) && !Number.isNaN(nb)) return na-nb;
+    return String(a).localeCompare(String(b));
+  });
+
+  const w=$("libraryGrid");
+  w.innerHTML=`
+    <div style="grid-column:1/-1">
+      <button class="back" id="backLevels">← Semua level</button>
+      <div class="hero" style="margin-top:0">
+        <h1 style="font-size:32px">${level}</h1>
+        <p>Pilih DAY untuk membuka kumpulan bunpou pada level ${level}.</p>
+      </div>
+    </div>
+  `;
+
+  if(!dayKeys.length){
+    const empty=document.createElement("div");
+    empty.className="item";
+    empty.style.gridColumn="1/-1";
+    empty.innerHTML=`
+      <h3>Belum ada data</h3>
+      <p>Upload JSON dengan field <b>level: "${level}"</b> dan field <b>day</b>.</p>
+    `;
+    w.appendChild(empty);
+  }else{
+    dayKeys.forEach(day=>{
+      const list=dayMap[day];
+      const studied=list.filter(d=>gp(d.id).studied).length;
+      const dueCount=list.filter(isDue).length;
+
+      const x=document.createElement("div");
+      x.className="item";
+      x.innerHTML=`
+        <h3>📁 ${dayLabel(normalizeDay(day))}</h3>
+        <p>${list.length} bunpou · ${studied} sudah dibaca</p>
+        <div class="chips">
+          ${dueCount?`<span class="chip red">${dueCount} due</span>`:""}
+          <span class="chip">Buka DAY</span>
+        </div>
+      `;
+      x.onclick=()=>openDay(level,day,list);
+      w.appendChild(x);
+    });
+  }
+
+  setTimeout(()=>$("backLevels").onclick=renderLibrary,0);
+}
+
+function openDay(level,day,items){
+  const w=$("libraryGrid");
+  w.innerHTML=`
+    <div style="grid-column:1/-1">
+      <button class="back" id="backDays">← ${level}</button>
+      <div class="hero" style="margin-top:0">
+        <h1 style="font-size:32px">${level} · ${dayLabel(normalizeDay(day))}</h1>
+        <p>Pilih bunpou untuk membaca lampiran contoh kalimat.</p>
+      </div>
+    </div>
+  `;
+
+  items.forEach(d=>{
+    const p=gp(d.id);
+    const x=document.createElement("div");
+    x.className="item";
+    x.innerHTML=`
+      <h3>${esc(d.grammar)}</h3>
+      <p>${esc(d.meaning||"")} · ${(d.examples||[]).length} contoh</p>
+      <div class="chips">
+        <span class="chip ${p.studied?"green":""}">
+          ${p.studied?"✓ Yomimashita":"Belum dibaca"}
+        </span>
+        ${p.studied?`<span class="chip">SRS ${p.level}/12</span>`:""}
+      </div>
+    `;
+    x.onclick=()=>openStudy(d.id);
+    w.appendChild(x);
+  });
+
+  setTimeout(()=>$("backDays").onclick=()=>openLevel(level),0);
+}
+
+function openStudy(id){
+  studyId=id;
+  const d=deck(id);
+
+  document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));
+  $("study").classList.add("on");
+  document.querySelectorAll("[data-page]").forEach(x=>x.classList.remove("active"));
+  scrollTo(0,0);
+
+  $("sg").textContent=d.grammar;
+  $("sm").textContent=d.meaning||"";
+  $("se").textContent=d.explanation||"—";
+  $("sf").innerHTML=(d.formula||[]).map(esc).join("<br>");
+
+  $("examples").innerHTML=(d.examples||[]).map(e=>`
+    <div class="example">
+      <div class="jp">${segs(e.segments)}</div>
+      <div class="id">${esc(e.translation||"")}</div>
+    </div>
+  `).join("");
+
+  const p=gp(id);
+
+  $("yomiBtn").disabled=!p.studied;
+  $("yomiBtn").textContent=p.studied
+    ?"✓ 読みました · Sudah dibaca"
+    :"読みました · Yomimashita";
+
+  if(observer) observer.disconnect();
+
+  observer=new IntersectionObserver(entries=>{
+    if(entries[0].isIntersecting){
+      $("yomiBtn").disabled=false;
+    }
+  },{threshold:.75});
+
+  observer.observe($("sentinel"));
+}
+
+$("backBtn").onclick=()=>go("library");
+
+$("yomiBtn").onclick=()=>{
+  const d=deck(studyId);
+  const p=gp(studyId);
+
+  p.studied=true;
+  if(p.level<12 && !p.dueAt){
+    p.dueAt=Date.now();
+  }
+
+  sp(studyId,p);
+
+  $("yomiBtn").textContent="✓ 読みました · Sudah dibaca";
+  $("startName").textContent=d.grammar;
+  $("startDialog").showModal();
+};
+
+$("stayBtn").onclick=()=>{
+  $("startDialog").close();
+  go("library");
+};
+
+$("startBtn").onclick=()=>{
+  $("startDialog").close();
+  go("review");
+};
+
+function renderStats(){
+  $("stTotal").textContent=decks.length;
+  $("stRead").textContent=decks.filter(d=>gp(d.id).studied).length;
+  $("stDue").textContent=decks.filter(isDue).length;
+  $("stMaster").textContent=decks.filter(d=>gp(d.id).level===12).length;
+}
+
+function startReview(){
+  renderStats();
+
+  due=decks
+    .filter(isDue)
+    .sort((a,b)=>(gp(a.id).dueAt||0)-(gp(b.id).dueAt||0));
+
+  $("reviewEmpty").classList.toggle("hide",due.length>0);
+  $("reviewArea").classList.toggle("hide",!due.length);
+
+  current=due[0]||null;
+
+  if(current){
+    renderCard();
+  }
+}
+
+function question(d){
+  const p=gp(d.id);
+  const qs=d.questions||[];
+  return qs.length ? qs[(p.q||0)%qs.length] : null;
+}
+
+function track(n){
+  $("track").innerHTML=Array.from({length:12},(_,i)=>{
+    return `<div class="dot ${i<n?(n===12?"done":"on"):""}"></div>`;
+  }).join("");
+}
+
+function renderCard(){
+  locked=false;
+  retry11=false;
+
+  const p=gp(current.id);
+  const q=question(current);
+
+  current._q=q;
+
+  $("levelBadge").textContent=`SRS ${p.level} / 12`;
+  $("queueText").textContent=`${due.length} review tersisa`;
+
+  track(p.level);
+
+  $("sentence").innerHTML=segs(q.segments);
+
+  const t=q.translation||{};
+  $("translation").innerHTML=
+    `${esc(t.before||"")}<mark>${esc(t.highlight||"")}</mark>${esc(t.after||"")}`;
+
+  $("feedback").className="feedback";
+  $("nextBtn").className="next";
+
+  const a=$("answer");
+  a.focus();
+
+  a.oninput=()=>{
+    a.style.width=
+      Math.max(4,Math.min(10,[...a.value].length+1))+"em";
+  };
+}
+
+$("answerForm").onsubmit=e=>{
+  e.preventDefault();
+  submit();
+};
+
+function submit(){
+  if(locked || !current) return;
+
+  const a=$("answer");
+  if(!a.value.trim()) return;
+
+  const q=current._q;
+  const p=gp(current.id);
+
+  const accepted=q.accepted?.length ? q.accepted : [q.answer];
+  const ok=accepted.some(x=>norm(x)===norm(a.value));
+
+  if(ok){
+    correct(a,p);
+    return;
+  }
+
+  if(p.level===11 && !retry11){
+    retry11=true;
+    a.classList.add("bad");
+    a.disabled=true;
+    $("retryDialog").showModal();
+    return;
+  }
+
+  wrong(a,p);
+}
+
+function correct(a,p){
+  locked=true;
+
+  a.classList.remove("bad");
+  a.classList.add("ok");
+  a.disabled=true;
+
+  const old=p.level;
+
+  p.level=Math.min(12,p.level+1);
+  p.q=(p.q||0)+1;
+  p.last="correct";
+  p.lastAt=Date.now();
+  p.dueAt=p.level===12
+    ?null
+    :Date.now()+(INTERVAL[old]||INTERVAL[10]);
+
+  sp(current.id,p);
+
+  track(p.level);
+  $("levelBadge").textContent=`SRS ${p.level} / 12`;
+
+  $("feedback").className="feedback on ok";
+  $("fbTitle").textContent=
+    p.level===12
+      ?"✓ Benar · Mastered!"
+      :"✓ Benar · Naik satu level";
+
+  $("fbText").textContent=
+    p.level===12
+      ?"Bunpou ini sudah mencapai SRS 12."
+      :`Review berikutnya ${when(p.dueAt)}.`;
+
+  $("nextBtn").className="next on";
+  renderStats();
+}
+
+function wrong(a,p){
+  locked=true;
+
+  a.classList.add("bad");
+  a.disabled=true;
+
+  const before=p.level;
+
+  p.level=Math.max(0,p.level-1);
+  p.q=(p.q||0)+1;
+  p.last="wrong";
+  p.lastAt=Date.now();
+  p.dueAt=Date.now()+WRONG;
+
+  sp(current.id,p);
+
+  track(p.level);
+  $("levelBadge").textContent=`SRS ${p.level} / 12`;
+
+  $("feedback").className="feedback on bad";
+  $("fbTitle").textContent=`✕ Salah · SRS ${before} → ${p.level}`;
+  $("fbText").innerHTML=
+    `Jawaban benar: <b>${esc(current._q.answer)}</b>. Kembali dalam 10 menit.`;
+
+  $("nextBtn").className="next on";
+  renderStats();
+}
+
+$("retryBtn").onclick=()=>{
+  $("retryDialog").close();
+
+  const a=$("answer");
+  a.value="";
+  a.disabled=false;
+  a.classList.remove("bad");
+  a.style.width="5em";
+  a.focus();
+};
+
+$("nextBtn").onclick=()=>startReview();
+
+function when(ts){
+  const m=Math.ceil((ts-Date.now())/60000);
+
+  if(m<60) return `dalam ${m} menit`;
+
+  const h=Math.ceil(m/60);
+  if(h<48) return `dalam ${h} jam`;
+
+  const d=Math.ceil(h/24);
+  if(d<60) return `dalam ${d} hari`;
+
+  return `dalam ${Math.round(d/30)} bulan`;
+}
+
+function validate(data){
+  if(!Array.isArray(data) || !data.length){
+    throw Error("JSON harus berupa array dan tidak boleh kosong.");
+  }
+
+  data.forEach((d,i)=>{
+    const level=String(d.level||"").toUpperCase();
+
+    if(!["N1","N2","N3","N4","N5"].includes(level)){
+      throw Error(`Item ${i+1}: field level wajib N1, N2, N3, N4, atau N5.`);
+    }
+
+    if(d.day===undefined || d.day===null || String(d.day).trim()===""){
+      throw Error(`Item ${i+1}: field day wajib ada.`);
+    }
+
+    if(
+      !d.id ||
+      !d.grammar ||
+      !Array.isArray(d.examples) ||
+      !Array.isArray(d.questions) ||
+      !d.questions.length
+    ){
+      throw Error(`Item ${i+1}: id, grammar, examples, dan questions wajib lengkap.`);
+    }
+
+    d.level=level;
+
+    d.questions.forEach((q,j)=>{
+      if(
+        !q.answer ||
+        !Array.isArray(q.segments) ||
+        !q.segments.some(seg=>seg.blank) ||
+        !q.translation ||
+        typeof q.translation.highlight!=="string"
+      ){
+        throw Error(`${d.grammar}, soal ${j+1} belum lengkap.`);
+      }
+    });
+  });
+}
+
+$("uploadJsonBtn").onclick=()=>{
+  $("jsonFileInput").click();
+};
+
+$("jsonFileInput").onchange=async e=>{
+  const file=e.target.files?.[0];
+  if(!file) return;
+
+  try{
+    const data=JSON.parse(await file.text());
+    validate(data);
+
+    const incomingIds=new Set(data.map(d=>d.id));
+    decks=[
+      ...decks.filter(d=>!incomingIds.has(d.id)),
+      ...data
+    ];
+
+    save();
+    renderLibrary();
+    renderStats();
+
+    const levels=[...new Set(data.map(d=>d.level))].join(", ");
+    const days=[...new Set(data.map(d=>dayLabel(normalizeDay(d.day))))].join(", ");
+    toast(`${data.length} bunpou diupload · ${levels} · ${days}`);
+  }catch(err){
+    alert("File JSON tidak valid:\n\n"+err.message);
+  }
+
+  e.target.value="";
+};
+
+function toast(s){
+  const t=$("toast");
+  t.textContent=s;
+  t.classList.add("on");
+  setTimeout(()=>t.classList.remove("on"),1800);
+}
+
+renderLibrary();
+renderStats();
+</script>
+</body>
+</html>
