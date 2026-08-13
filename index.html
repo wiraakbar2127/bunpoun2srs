@@ -35,7 +35,7 @@ button,input{font:inherit}button{cursor:pointer}
 .chip.red{background:var(--red2);color:var(--red)}.chip.green{background:var(--green2);color:var(--green)}
 .item-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px}.item-actions .chips{margin-top:0;flex:1}
 .delete-btn{width:34px;height:34px;flex:0 0 34px;border:1px solid #ffd2d5;background:#fff5f5;color:var(--red);border-radius:10px;padding:0;display:grid;place-items:center}.delete-btn:hover{background:#ffe9ea}.delete-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.study{max-width:830px;margin:auto}.back{width:40px;height:40px;border:1px solid #ffd2d5;background:var(--red2);color:var(--red);border-radius:12px;padding:0;margin:8px 0 18px;display:grid;place-items:center}.back:hover{background:#ffe2e4}.back svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.study{max-width:830px;margin:auto}.back{position:fixed;z-index:35;top:88px;left:max(14px,calc((100vw - 1040px)/2 - 54px));width:42px;height:42px;border:1px solid #ffc8cc;background:rgba(255,240,241,.96);color:var(--red);border-radius:13px;padding:0;margin:0;display:grid;place-items:center;box-shadow:0 8px 24px rgba(61,40,35,.12);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.back:hover{background:#ffe2e4;transform:translateY(-1px)}.back:active{transform:translateY(0)}.back svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .study h1{font-size:42px;margin:0}.meaning{color:var(--muted);font-size:18px;margin:5px 0 20px}
 .box,.example{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:12px}
 .box small{display:block;text-transform:uppercase;font-weight:900;color:var(--muted);letter-spacing:.06em;margin-bottom:7px}
@@ -90,7 +90,7 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
 .hide{display:none!important}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(15px);opacity:0;background:var(--text);color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;font-weight:800;transition:.2s;z-index:50}
 .toast.on{opacity:1;transform:translateX(-50%)}
-@media(max-width:760px){.top{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.card{padding:34px 15px}.sentence{font-size:20px;line-height:2.2}.rhead{align-items:flex-start;gap:10px}.review-tools{flex-wrap:wrap;justify-content:flex-end}}
+@media(max-width:760px){.top{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.card{padding:34px 15px}.sentence{font-size:20px;line-height:2.2}.rhead{align-items:flex-start;gap:10px}.review-tools{flex-wrap:wrap;justify-content:flex-end}.back{top:132px;left:14px}}
 @media(max-width:500px){.grid{grid-template-columns:1fr}.nav .btn{font-size:12px;padding:8px 9px}.sync-actions{grid-template-columns:1fr}}
 </style>
 </head>
@@ -267,6 +267,20 @@ let locked=false;
 let enterToNext=false;
 let observer=null;
 
+// Simpan posisi scroll tiap lapisan navigasi agar tombol Back kembali tepat ke posisi sebelumnya.
+const scrollMemory={library:0,levels:{},days:{}};
+
+function dayScrollKey(level,day){
+  return `${String(level||"").toUpperCase()}::${String(normalizeDay(day))}`;
+}
+
+function restoreScroll(y){
+  const top=Math.max(0,Number(y)||0);
+  requestAnimationFrame(()=>{
+    requestAnimationFrame(()=>window.scrollTo({top,left:0,behavior:"auto"}));
+  });
+}
+
 function load(k,f){
   try{
     return JSON.parse(localStorage.getItem(k)) || f;
@@ -375,18 +389,20 @@ function deckMasteredCount(d){
   return questionPool(d).reduce((n,q,index)=>n+(questionProgress(d,q,index).level===12?1:0),0);
 }
 
-function go(name){
+function go(name,options={}){
+  const {render=true,scrollTop=true}=options;
+
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));
   $(name).classList.add("on");
   document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===name));
 
-  if(name==="library") renderLibrary();
+  if(render && name==="library") renderLibrary();
   if(name==="review"){
     renderStats();
     startReview();
   }
 
-  scrollTo(0,0);
+  if(scrollTop) window.scrollTo({top:0,left:0,behavior:"auto"});
 }
 
 document.querySelectorAll("[data-page]").forEach(b=>{
@@ -574,7 +590,10 @@ function renderLibrary(){
         <span class="chip">${items.length?"Buka level":"Kosong"}</span>
       </div>
     `;
-    x.onclick=()=>openLevel(level);
+    x.onclick=()=>{
+      scrollMemory.library=window.scrollY;
+      openLevel(level);
+    };
     w.appendChild(x);
   });
 }
@@ -591,7 +610,7 @@ function dayLabel(day){
   return `DAY ${String(day).replace(/^day\s*/i,"")}`;
 }
 
-function openLevel(level){
+function openLevel(level,options={}){
   const items=decks.filter(d=>String(d.level||"").toUpperCase()===level);
   const dayMap={};
 
@@ -648,6 +667,7 @@ function openLevel(level){
 
       x.onclick=e=>{
         if(e.target.closest(".delete-btn")) return;
+        scrollMemory.levels[level]=window.scrollY;
         openDay(level,day,list);
       };
 
@@ -660,7 +680,18 @@ function openLevel(level){
     });
   }
 
-  setTimeout(()=>$("backLevels").onclick=renderLibrary,0);
+  setTimeout(()=>{
+    $("backLevels").onclick=()=>{
+      renderLibrary();
+      restoreScroll(scrollMemory.library);
+    };
+  },0);
+
+  if(options.restoreY!==undefined){
+    restoreScroll(options.restoreY);
+  }else{
+    window.scrollTo({top:0,left:0,behavior:"auto"});
+  }
 }
 
 function deleteDay(level,day){
@@ -695,7 +726,7 @@ function deleteDay(level,day){
   openLevel(level);
 }
 
-function openDay(level,day,items){
+function openDay(level,day,items,options={}){
   const w=$("libraryGrid");
   w.innerHTML=`
     <div style="grid-column:1/-1">
@@ -729,6 +760,7 @@ function openDay(level,day,items){
 
     x.onclick=e=>{
       if(e.target.closest(".delete-btn")) return;
+      scrollMemory.days[dayScrollKey(level,day)]=window.scrollY;
       openStudy(d.id);
     };
 
@@ -740,7 +772,15 @@ function openDay(level,day,items){
     w.appendChild(x);
   });
 
-  setTimeout(()=>$("backDays").onclick=()=>openLevel(level),0);
+  setTimeout(()=>{
+    $("backDays").onclick=()=>openLevel(level,{restoreY:scrollMemory.levels[level]??0});
+  },0);
+
+  if(options.restoreY!==undefined){
+    restoreScroll(options.restoreY);
+  }else{
+    window.scrollTo({top:0,left:0,behavior:"auto"});
+  }
 }
 
 function deleteBunpou(id,level,day){
@@ -831,8 +871,8 @@ $("backBtn").onclick=()=>{
     String(normalizeDay(item.day))===String(day)
   );
 
-  go("library");
-  openDay(level,day,items);
+  go("library",{render:false,scrollTop:false});
+  openDay(level,day,items,{restoreY:scrollMemory.days[dayScrollKey(level,day)]??0});
 };
 
 function setFunctionEditMode(editing){
