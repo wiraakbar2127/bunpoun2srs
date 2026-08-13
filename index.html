@@ -32,8 +32,10 @@ button,input{font:inherit}button{cursor:pointer}
 .item h3{margin:0 0 7px}.item p{margin:0;color:var(--muted);line-height:1.5;font-size:13px}
 .chips{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}
 .chip{padding:5px 8px;border-radius:999px;background:#f7f2f0;font-size:11px;font-weight:800;color:var(--muted)}
-.chip.red{background:var(--red2);color:var(--red)}.chip.green{background:var(--green2);color:var(--green)}.delete-btn{margin-top:12px;border:1px solid #ffd2d5;background:#fff5f5;color:var(--red);border-radius:10px;padding:7px 10px;font-size:12px;font-weight:900}.delete-btn:hover{background:#ffe9ea}
-.study{max-width:830px;margin:auto}.back{border:0;background:none;color:var(--muted);font-weight:800;padding:0;margin:8px 0 18px}
+.chip.red{background:var(--red2);color:var(--red)}.chip.green{background:var(--green2);color:var(--green)}
+.item-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px}.item-actions .chips{margin-top:0;flex:1}
+.delete-btn{width:34px;height:34px;flex:0 0 34px;border:1px solid #ffd2d5;background:#fff5f5;color:var(--red);border-radius:10px;padding:0;display:grid;place-items:center}.delete-btn:hover{background:#ffe9ea}.delete-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.study{max-width:830px;margin:auto}.back{width:40px;height:40px;border:1px solid #ffd2d5;background:var(--red2);color:var(--red);border-radius:12px;padding:0;margin:8px 0 18px;display:grid;place-items:center}.back:hover{background:#ffe2e4}.back svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .study h1{font-size:42px;margin:0}.meaning{color:var(--muted);font-size:18px;margin:5px 0 20px}
 .box,.example{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:12px}
 .box small{display:block;text-transform:uppercase;font-weight:900;color:var(--muted);letter-spacing:.06em;margin-bottom:7px}
@@ -83,12 +85,13 @@ dialog{border:0;border-radius:21px;padding:0;width:min(620px,calc(100% - 28px));
 dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
 .modal{padding:23px}.modal h2{margin:0 0 8px}.modal p{color:var(--muted);line-height:1.6}
 .actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.sync-note{background:#faf6f4;border:1px solid var(--line);border-radius:14px;padding:13px 14px;color:var(--muted);font-size:13px;line-height:1.6;margin:14px 0}.sync-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sync-actions .btn{padding:12px}
 .warn{background:var(--red2);color:#972f34;border:1px solid #ffd6d8;border-radius:14px;padding:13px;line-height:1.55}
 .hide{display:none!important}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(15px);opacity:0;background:var(--text);color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;font-weight:800;transition:.2s;z-index:50}
 .toast.on{opacity:1;transform:translateX(-50%)}
 @media(max-width:760px){.top{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.card{padding:34px 15px}.sentence{font-size:20px;line-height:2.2}.rhead{align-items:flex-start;gap:10px}.review-tools{flex-wrap:wrap;justify-content:flex-end}}
-@media(max-width:500px){.grid{grid-template-columns:1fr}.nav .btn{font-size:12px;padding:8px 9px}}
+@media(max-width:500px){.grid{grid-template-columns:1fr}.nav .btn{font-size:12px;padding:8px 9px}.sync-actions{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -101,10 +104,14 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
   <div class="nav">
     <button class="btn active" data-page="library">Lampiran</button>
     <button class="btn" data-page="review">SRS</button>
-    <button class="btn red icon-btn" id="uploadJsonBtn" type="button" title="Upload JSON" aria-label="Upload JSON">
+    <button class="btn icon-btn" id="saveDataBtn" type="button" title="Save / Sinkron" aria-label="Save / Sinkron">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></svg>
+    </button>
+    <button class="btn red icon-btn" id="uploadJsonBtn" type="button" title="Upload banyak JSON" aria-label="Upload banyak JSON">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
     </button>
-    <input class="hide" id="jsonFileInput" type="file" accept=".json,application/json">
+    <input class="hide" id="jsonFileInput" type="file" accept=".json,application/json" multiple>
+    <input class="hide" id="saveImportInput" type="file" accept=".json,application/json">
   </div>
 </header>
 
@@ -118,7 +125,7 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
 
 <section class="page" id="study">
   <div class="study">
-    <button class="back" id="backBtn">← Kembali</button>
+    <button class="back" id="backBtn" type="button" title="Kembali" aria-label="Kembali"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
     <h1 id="sg"></h1>
     <div class="meaning" id="sm"></div>
     <div class="box" id="functionBox">
@@ -144,7 +151,7 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
   </div>
 
   <div class="stats">
-    <div class="stat"><small>Total</small><b id="stTotal">0</b></div>
+    <div class="stat"><small>Total Soal</small><b id="stTotal">0</b></div>
     <div class="stat"><small>Yomimashita</small><b id="stRead">0</b></div>
     <div class="stat"><small>Due</small><b id="stDue">0</b></div>
     <div class="stat"><small>Mastered</small><b id="stMaster">0</b></div>
@@ -194,6 +201,19 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
   </div>
 </dialog>
 
+<dialog id="saveDialog">
+  <div class="modal">
+    <h2>Save & Sinkron</h2>
+    <p>Progress disimpan otomatis di browser ini. Untuk memindahkan progress ke web/mobile lain, export save dari perangkat ini lalu import file save di perangkat tujuan.</p>
+    <div class="sync-note">File save berisi seluruh bunpou, status Yomimashita, level SRS setiap contoh kalimat, dan jadwal review.</div>
+    <div class="sync-actions">
+      <button class="btn red" id="exportSaveBtn" type="button">Export Save</button>
+      <button class="btn" id="importSaveBtn" type="button">Import Save</button>
+    </div>
+    <div class="actions" style="margin-top:14px"><button class="btn" id="closeSaveBtn" type="button">Tutup</button></div>
+  </div>
+</dialog>
+
 <dialog id="retryDialog">
   <div class="modal">
     <h2>Kesempatan kedua</h2>
@@ -211,8 +231,10 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY="bunpou_data_v6";
-const PKEY="bunpou_progress_v6";
+const KEY="bunpou_data_v7";
+const PKEY="bunpou_progress_v7";
+const LEGACY_KEY="bunpou_data_v6";
+const LEGACY_PKEY="bunpou_progress_v6";
 
 const INTERVAL=[
   4*3600000,
@@ -232,8 +254,8 @@ const WRONG=10*60000;
 
 const $=id=>document.getElementById(id);
 
-let decks=load(KEY,[]);
-let prog=load(PKEY,{});
+let decks=load(KEY,null) ?? load(LEGACY_KEY,[]);
+let prog=load(PKEY,null) ?? load(LEGACY_PKEY,{});
 let studyId=null;
 let due=[];
 let current=null;
@@ -279,13 +301,75 @@ function sp(id,p){
   save();
 }
 
+function questionKey(deckId,q,index){
+  return `${deckId}::${q?.id || `example-${index+1}`}`;
+}
+
+function questionProgress(d,q,index){
+  const key=questionKey(d.id,q,index);
+  if(prog[key]) return prog[key];
+
+  // Migrasi progress v6: kartu contoh mengikuti progress bunpou lama saat pertama dibuka.
+  const legacy=prog[d.id];
+  if(legacy?.studied){
+    return {
+      level:Number(legacy.level)||0,
+      dueAt:legacy.dueAt ?? Date.now(),
+      last:legacy.last || null,
+      lastAt:legacy.lastAt || null
+    };
+  }
+
+  return {level:0,dueAt:null,last:null,lastAt:null};
+}
+
+function setQuestionProgress(key,p){
+  prog[key]=p;
+  save();
+}
+
+function clearProgressForDeck(id){
+  delete prog[id];
+  Object.keys(prog).forEach(key=>{
+    if(key.startsWith(`${id}::`)) delete prog[key];
+  });
+}
+
 function deck(id){
   return decks.find(x=>x.id===id);
 }
 
-function isDue(d){
-  const p=gp(d.id);
-  return p.studied && p.level<12 && (!p.dueAt || p.dueAt<=Date.now());
+function reviewCards(){
+  const cards=[];
+
+  decks.forEach(d=>{
+    if(!gp(d.id).studied) return;
+    questionPool(d).forEach((q,index)=>{
+      const key=questionKey(d.id,q,index);
+      const p=questionProgress(d,q,index);
+      cards.push({deck:d,q,index,key,p});
+    });
+  });
+
+  return cards;
+}
+
+function isCardDue(card){
+  const p=questionProgress(card.deck,card.q,card.index);
+  return p.level<12 && (!p.dueAt || p.dueAt<=Date.now());
+}
+
+function deckDueCount(d){
+  if(!gp(d.id).studied) return 0;
+  return questionPool(d).reduce((n,q,index)=>{
+    const card={deck:d,q,index};
+    return n+(isCardDue(card)?1:0);
+  },0);
+}
+
+function deckMasteredCount(d){
+  if(!gp(d.id).studied) return 0;
+  return questionPool(d).reduce((n,q,index)=>n+(questionProgress(d,q,index).level===12?1:0),0);
 }
 
 function go(name){
@@ -475,7 +559,7 @@ function renderLibrary(){
     const items=decks.filter(d=>String(d.level||"").toUpperCase()===level);
     const days=[...new Set(items.map(d=>normalizeDay(d.day)))].filter(v=>v!=="" && v!==null);
     const studied=items.filter(d=>gp(d.id).studied).length;
-    const dueCount=items.filter(isDue).length;
+    const dueCount=items.reduce((n,d)=>n+deckDueCount(d),0);
 
     const x=document.createElement("div");
     x.className="item";
@@ -523,7 +607,7 @@ function openLevel(level){
   const w=$("libraryGrid");
   w.innerHTML=`
     <div style="grid-column:1/-1">
-      <button class="back" id="backLevels">← Semua level</button>
+      <button class="back" id="backLevels" type="button" title="Kembali ke semua level" aria-label="Kembali ke semua level"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
       <div class="hero" style="margin-top:0">
         <h1 style="font-size:32px">${level}</h1>
         <p>Pilih DAY untuk membuka kumpulan bunpou pada level ${level}.</p>
@@ -544,18 +628,19 @@ function openLevel(level){
     dayKeys.forEach(day=>{
       const list=dayMap[day];
       const studied=list.filter(d=>gp(d.id).studied).length;
-      const dueCount=list.filter(isDue).length;
+      const dueCount=list.reduce((n,d)=>n+deckDueCount(d),0);
 
       const x=document.createElement("div");
       x.className="item";
       x.innerHTML=`
         <h3>📁 ${dayLabel(normalizeDay(day))}</h3>
         <p>${list.length} bunpou · ${studied} sudah dibaca</p>
-        <div class="chips">
-          ${dueCount?`<span class="chip red">${dueCount} due</span>`:""}
-          <span class="chip">Buka DAY</span>
+        <div class="item-actions">
+          <div class="chips">
+            ${dueCount?`<span class="chip red">${dueCount} due</span>`:""}
+          </div>
+          <button class="delete-btn" type="button" title="Hapus DAY" aria-label="Hapus DAY"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg></button>
         </div>
-        <button class="delete-btn" type="button">Hapus DAY</button>
       `;
 
       x.onclick=e=>{
@@ -598,7 +683,7 @@ function deleteDay(level,day){
   decks=decks.filter(item=>!ids.has(item.id));
 
   ids.forEach(id=>{
-    delete prog[id];
+    clearProgressForDeck(id);
   });
 
   save();
@@ -611,7 +696,7 @@ function openDay(level,day,items){
   const w=$("libraryGrid");
   w.innerHTML=`
     <div style="grid-column:1/-1">
-      <button class="back" id="backDays">← ${level}</button>
+      <button class="back" id="backDays" type="button" title="Kembali ke ${level}" aria-label="Kembali ke ${level}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
       <div class="hero" style="margin-top:0">
         <h1 style="font-size:32px">${level} · ${dayLabel(normalizeDay(day))}</h1>
         <p>Pilih bunpou untuk membaca lampiran contoh kalimat.</p>
@@ -621,18 +706,22 @@ function openDay(level,day,items){
 
   items.forEach(d=>{
     const p=gp(d.id);
+    const totalQuestions=questionPool(d).length;
+    const masteredQuestions=deckMasteredCount(d);
     const x=document.createElement("div");
     x.className="item";
     x.innerHTML=`
       <h3>${esc(d.grammar)}</h3>
-      <p>${esc(d.meaning||"")} · ${(d.examples||[]).length} contoh</p>
-      <div class="chips">
-        <span class="chip ${p.studied?"green":""}">
-          ${p.studied?"✓ Yomimashita":"Belum dibaca"}
-        </span>
-        ${p.studied?`<span class="chip">SRS ${p.level}/12</span>`:""}
+      <p>${esc(d.meaning||"")} · ${totalQuestions} contoh / soal SRS</p>
+      <div class="item-actions">
+        <div class="chips">
+          <span class="chip ${p.studied?"green":""}">
+            ${p.studied?"✓ Yomimashita":"Belum dibaca"}
+          </span>
+          ${p.studied?`<span class="chip">SRS ${masteredQuestions}/${totalQuestions} mastered</span>`:""}
+        </div>
+        <button class="delete-btn" type="button" title="Hapus bunpou" aria-label="Hapus bunpou"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg></button>
       </div>
-      <button class="delete-btn" type="button">Hapus</button>
     `;
 
     x.onclick=e=>{
@@ -663,7 +752,7 @@ function deleteBunpou(id,level,day){
   if(!ok) return;
 
   decks=decks.filter(item=>item.id!==id);
-  delete prog[id];
+  clearProgressForDeck(id);
   save();
 
   const remaining=decks.filter(
@@ -776,11 +865,16 @@ $("yomiBtn").onclick=()=>{
   const p=gp(studyId);
 
   p.studied=true;
-  if(p.level<12 && !p.dueAt){
-    p.dueAt=Date.now();
-  }
-
   sp(studyId,p);
+
+  // Setiap contoh kalimat adalah kartu SRS mandiri dan langsung due setelah Yomimashita.
+  questionPool(d).forEach((q,index)=>{
+    const key=questionKey(d.id,q,index);
+    if(!prog[key]){
+      prog[key]={level:0,dueAt:Date.now(),last:null,lastAt:null};
+    }
+  });
+  save();
 
   $("yomiBtn").textContent="✓ 読みました · Sudah dibaca";
   $("startName").textContent=d.grammar;
@@ -814,18 +908,19 @@ $("startBtn").onclick=()=>{
 };
 
 function renderStats(){
-  $("stTotal").textContent=decks.length;
+  const cards=reviewCards();
+  $("stTotal").textContent=decks.reduce((n,d)=>n+questionPool(d).length,0);
   $("stRead").textContent=decks.filter(d=>gp(d.id).studied).length;
-  $("stDue").textContent=decks.filter(isDue).length;
-  $("stMaster").textContent=decks.filter(d=>gp(d.id).level===12).length;
+  $("stDue").textContent=cards.filter(isCardDue).length;
+  $("stMaster").textContent=cards.filter(card=>questionProgress(card.deck,card.q,card.index).level===12).length;
 }
 
 function startReview(){
   renderStats();
 
-  due=decks
-    .filter(isDue)
-    .sort((a,b)=>(gp(a.id).dueAt||0)-(gp(b.id).dueAt||0));
+  due=reviewCards()
+    .filter(isCardDue)
+    .sort((a,b)=>(questionProgress(a.deck,a.q,a.index).dueAt||0)-(questionProgress(b.deck,b.q,b.index).dueAt||0));
 
   $("reviewEmpty").classList.toggle("hide",due.length>0);
   $("reviewArea").classList.toggle("hide",!due.length);
@@ -905,13 +1000,13 @@ function renderCard(){
   enterToNext=false;
   retry11=false;
 
-  const p=gp(current.id);
-  const q=question(current);
+  const p=questionProgress(current.deck,current.q,current.index);
+  const q=current.q;
 
   current._q=q;
 
   $("levelBadge").textContent=`SRS ${p.level} / 12`;
-  $("queueText").textContent=`${due.length} review tersisa`;
+  $("queueText").textContent=`${due.length} soal review tersisa`;
 
   track(p.level);
 
@@ -962,7 +1057,7 @@ function submit(){
   if(!a.value.trim()) return;
 
   const q=current._q;
-  const p=gp(current.id);
+  const p=questionProgress(current.deck,current.q,current.index);
 
   const accepted=q.accepted?.length ? q.accepted : [q.answer];
   const ok=accepted.some(x=>norm(x)===norm(a.value));
@@ -1000,14 +1095,13 @@ function correct(a,p){
   const old=p.level;
 
   p.level=Math.min(12,p.level+1);
-  p.q=(p.q||0)+1;
   p.last="correct";
   p.lastAt=Date.now();
   p.dueAt=p.level===12
     ?null
     :Date.now()+(INTERVAL[old]||INTERVAL[10]);
 
-  sp(current.id,p);
+  setQuestionProgress(current.key,p);
 
   track(p.level);
   $("levelBadge").textContent=`SRS ${p.level} / 12`;
@@ -1040,12 +1134,11 @@ function wrong(a,p){
   const before=p.level;
 
   p.level=Math.max(0,p.level-1);
-  p.q=(p.q||0)+1;
   p.last="wrong";
   p.lastAt=Date.now();
   p.dueAt=Date.now()+WRONG;
 
-  sp(current.id,p);
+  setQuestionProgress(current.key,p);
 
   track(p.level);
   $("levelBadge").textContent=`SRS ${p.level} / 12`;
@@ -1145,14 +1238,29 @@ $("uploadJsonBtn").onclick=()=>{
 };
 
 $("jsonFileInput").onchange=async e=>{
-  const file=e.target.files?.[0];
-  if(!file) return;
+  const files=[...(e.target.files||[])];
+  if(!files.length) return;
 
   try{
-    const data=JSON.parse(await file.text());
-    validate(data);
+    const all=[];
 
+    for(const file of files){
+      let data;
+      try{
+        data=JSON.parse(await file.text());
+        validate(data);
+      }catch(err){
+        throw Error(`${file.name}: ${err.message}`);
+      }
+      all.push(...data);
+    }
+
+    // Jika ID yang sama muncul di beberapa file, versi dari file terakhir yang dipilih dipakai.
+    const incomingMap=new Map();
+    all.forEach(item=>incomingMap.set(item.id,item));
+    const data=[...incomingMap.values()];
     const incomingIds=new Set(data.map(d=>d.id));
+
     decks=[
       ...decks.filter(d=>!incomingIds.has(d.id)),
       ...data
@@ -1163,10 +1271,67 @@ $("jsonFileInput").onchange=async e=>{
     renderStats();
 
     const levels=[...new Set(data.map(d=>d.level))].join(", ");
-    const days=[...new Set(data.map(d=>dayLabel(normalizeDay(d.day))))].join(", ");
-    toast(`${data.length} bunpou diupload · ${levels} · ${days}`);
+    toast(`${files.length} file · ${data.length} bunpou diupload · ${levels}`);
   }catch(err){
-    alert("File JSON tidak valid:\n\n"+err.message);
+    alert("Upload JSON dibatalkan:\n\n"+err.message);
+  }
+
+  e.target.value="";
+};
+
+$("saveDataBtn").onclick=()=>$("saveDialog").showModal();
+$("closeSaveBtn").onclick=()=>$("saveDialog").close();
+$("importSaveBtn").onclick=()=>$("saveImportInput").click();
+
+$("exportSaveBtn").onclick=()=>{
+  save();
+  const payload={
+    type:"bunpou-srs-save",
+    version:7,
+    exportedAt:new Date().toISOString(),
+    decks,
+    prog
+  };
+
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  const stamp=new Date().toISOString().slice(0,10);
+  a.href=url;
+  a.download=`bunpou-srs-save-${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+  toast("Save berhasil diexport");
+};
+
+$("saveImportInput").onchange=async e=>{
+  const file=e.target.files?.[0];
+  if(!file) return;
+
+  try{
+    const payload=JSON.parse(await file.text());
+    if(payload?.type!=="bunpou-srs-save" || !Array.isArray(payload.decks) || !payload.prog || typeof payload.prog!=="object"){
+      throw Error("File ini bukan format Bunpou SRS Save yang valid.");
+    }
+
+    validate(payload.decks);
+
+    if(!confirm("Import save akan mengganti data dan progress yang ada di perangkat ini. Lanjutkan?")){
+      e.target.value="";
+      return;
+    }
+
+    decks=payload.decks;
+    prog=payload.prog;
+    save();
+    $("saveDialog").close();
+    go("library");
+    renderStats();
+    toast("Save berhasil diimport");
+  }catch(err){
+    alert("Import save gagal:\n\n"+err.message);
   }
 
   e.target.value="";
@@ -1179,6 +1344,8 @@ function toast(s){
   setTimeout(()=>t.classList.remove("on"),1800);
 }
 
+// Simpan ke key v7 agar data lama yang ditemukan ikut termigrasi.
+save();
 renderLibrary();
 renderStats();
 </script>
