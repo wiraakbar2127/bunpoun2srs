@@ -285,8 +285,7 @@ function deck(id){
 }
 
 function isDue(d){
-  const p=gp(d.id);
-  return p.studied && p.level<12 && (!p.dueAt || p.dueAt<=Date.now());
+  return dueQuestionCount(d)>0;
 }
 
 function go(name){
@@ -494,13 +493,14 @@ function renderLibrary(){
     const items=decks.filter(d=>String(d.level||"").toUpperCase()===level);
     const days=[...new Set(items.map(d=>normalizeDay(d.day)))].filter(v=>v!=="" && v!==null);
     const studied=items.filter(d=>gp(d.id).studied).length;
-    const dueCount=items.filter(isDue).length;
+    const questionCount=items.reduce((total,d)=>total+questionPool(d).length,0);
+    const dueCount=items.reduce((total,d)=>total+dueQuestionCount(d),0);
 
     const x=document.createElement("div");
     x.className="item";
     x.innerHTML=`
       <h3>📁 ${level}</h3>
-      <p>${items.length} bunpou · ${days.length} DAY · ${studied} sudah dibaca</p>
+      <p>${items.length} bunpou · ${questionCount} contoh soal · ${days.length} DAY · ${studied} sudah dibaca</p>
       <div class="chips">
         ${dueCount?`<span class="chip red">${dueCount} due</span>`:""}
         <span class="chip">${items.length?"Buka level":"Kosong"}</span>
@@ -563,13 +563,14 @@ function openLevel(level){
     dayKeys.forEach(day=>{
       const list=dayMap[day];
       const studied=list.filter(d=>gp(d.id).studied).length;
-      const dueCount=list.filter(isDue).length;
+      const questionCount=list.reduce((total,d)=>total+questionPool(d).length,0);
+      const dueCount=list.reduce((total,d)=>total+dueQuestionCount(d),0);
 
       const x=document.createElement("div");
       x.className="item";
       x.innerHTML=`
         <h3>📁 ${dayLabel(normalizeDay(day))}</h3>
-        <p>${list.length} bunpou · ${studied} sudah dibaca</p>
+        <p>${list.length} bunpou · ${questionCount} contoh soal · ${studied} sudah dibaca</p>
         <div class="chips">
           ${dueCount?`<span class="chip red">${dueCount} due</span>`:""}
           <span class="chip">Buka DAY</span>
@@ -795,9 +796,18 @@ $("yomiBtn").onclick=()=>{
   const p=gp(studyId);
 
   p.studied=true;
-  if(p.level<12 && !p.dueAt){
-    p.dueAt=Date.now();
-  }
+  p.cards=p.cards||{};
+
+  questionPool(d).forEach((q,index)=>{
+    const key=questionKey(q,index);
+    if(!p.cards[key]){
+      p.cards[key]={level:0,dueAt:Date.now(),last:null,lastAt:null};
+    }else if(p.cards[key].level<12 && !p.cards[key].dueAt){
+      p.cards[key].dueAt=Date.now();
+    }
+  });
+
+  syncDeckProgress(d,p);
 
   sp(studyId,p);
 
@@ -833,18 +843,19 @@ $("startBtn").onclick=()=>{
 };
 
 function renderStats(){
-  $("stTotal").textContent=decks.length;
+  const cards=allQuestionCards();
+  $("stTotal").textContent=cards.length;
   $("stRead").textContent=decks.filter(d=>gp(d.id).studied).length;
-  $("stDue").textContent=decks.filter(isDue).length;
-  $("stMaster").textContent=decks.filter(d=>gp(d.id).level===12).length;
+  $("stDue").textContent=cards.filter(cardIsDue).length;
+  $("stMaster").textContent=cards.filter(card=>card.progress.level===12).length;
 }
 
 function startReview(){
   renderStats();
 
-  due=decks
-    .filter(isDue)
-    .sort((a,b)=>(gp(a.id).dueAt||0)-(gp(b.id).dueAt||0));
+  due=allQuestionCards()
+    .filter(cardIsDue)
+    .sort((a,b)=>(a.progress.dueAt||0)-(b.progress.dueAt||0));
 
   $("reviewEmpty").classList.toggle("hide",due.length>0);
   $("reviewArea").classList.toggle("hide",!due.length);
@@ -907,10 +918,79 @@ function questionPool(d){
   }).filter(Boolean);
 }
 
-function question(d){
-  const p=gp(d.id);
-  const qs=questionPool(d);
-  return qs.length ? qs[(p.q||0)%qs.length] : null;
+function questionKey(q,index){
+  return String(q.id||`example-${index+1}`);
+}
+
+function questionCardsForDeck(d){
+  const parent=gp(d.id);
+  const questions=questionPool(d);
+  const hadCards=!!(parent.cards && Object.keys(parent.cards).length);
+
+  if(parent.studied && !parent.cards){
+    parent.cards={};
+  }
+
+  return questions.map((q,index)=>{
+    const key=questionKey(q,index);
+    let progress=parent.cards?.[key];
+
+    if(!progress){
+      const inheritLegacy=parent.studied && !hadCards && index===0;
+      progress={
+        level:inheritLegacy ? Number(parent.level||0) : 0,
+        dueAt:parent.studied
+          ?(inheritLegacy ? (parent.dueAt||Date.now()) : Date.now())
+          :null,
+        last:inheritLegacy ? (parent.last||null) : null,
+        lastAt:inheritLegacy ? (parent.lastAt||null) : null
+      };
+
+      if(parent.studied){
+        parent.cards[key]=progress;
+      }
+    }
+
+    return {deck:d,key,question:q,progress,exampleIndex:index,exampleTotal:questions.length};
+  });
+}
+
+function allQuestionCards(){
+  return decks.flatMap(questionCardsForDeck);
+}
+
+function cardIsDue(card){
+  const parent=gp(card.deck.id);
+  const p=card.progress;
+  return parent.studied && p.level<12 && (!p.dueAt || p.dueAt<=Date.now());
+}
+
+function dueQuestionCount(d){
+  return questionCardsForDeck(d).filter(cardIsDue).length;
+}
+
+function syncDeckProgress(d,parent){
+  const states=questionPool(d).map((q,index)=>{
+    const key=questionKey(q,index);
+    return parent.cards?.[key]||{level:0,dueAt:parent.studied?Date.now():null};
+  });
+  const levels=states.map(state=>Number(state.level||0));
+  const unfinished=states.filter(state=>state.level<12);
+
+  parent.level=levels.length ? Math.min(...levels) : 0;
+  parent.dueAt=unfinished.length
+    ?Math.min(...unfinished.map(state=>state.dueAt||Date.now()))
+    :null;
+}
+
+function saveQuestionProgress(card,p){
+  const parent=gp(card.deck.id);
+  parent.cards=parent.cards||{};
+  parent.cards[card.key]=p;
+  parent.last=p.last;
+  parent.lastAt=p.lastAt;
+  syncDeckProgress(card.deck,parent);
+  sp(card.deck.id,parent);
 }
 
 function track(n){
@@ -924,13 +1004,13 @@ function renderCard(){
   enterToNext=false;
   retry11=false;
 
-  const p=gp(current.id);
-  const q=question(current);
+  const p=current.progress;
+  const q=current.question;
 
   current._q=q;
 
-  $("levelBadge").textContent=`SRS ${p.level} / 12`;
-  $("queueText").textContent=`${due.length} review tersisa`;
+  $("levelBadge").textContent=`SRS ${p.level} / 12 · Contoh ${current.exampleIndex+1}/${current.exampleTotal}`;
+  $("queueText").textContent=`${due.length} soal review tersisa`;
 
   track(p.level);
 
@@ -981,7 +1061,7 @@ function submit(){
   if(!a.value.trim()) return;
 
   const q=current._q;
-  const p=gp(current.id);
+  const p=current.progress;
 
   const accepted=q.accepted?.length ? q.accepted : [q.answer];
   const ok=accepted.some(x=>norm(x)===norm(a.value));
@@ -1020,17 +1100,16 @@ function correct(a,p){
   const old=p.level;
 
   p.level=Math.min(12,p.level+1);
-  p.q=(p.q||0)+1;
   p.last="correct";
   p.lastAt=Date.now();
   p.dueAt=p.level===12
     ?null
     :Date.now()+(INTERVAL[old]||INTERVAL[10]);
 
-  sp(current.id,p);
+  saveQuestionProgress(current,p);
 
   track(p.level);
-  $("levelBadge").textContent=`SRS ${p.level} / 12`;
+  $("levelBadge").textContent=`SRS ${p.level} / 12 · Contoh ${current.exampleIndex+1}/${current.exampleTotal}`;
 
   $("feedback").className="feedback on ok";
   $("fbTitle").textContent=
@@ -1040,7 +1119,7 @@ function correct(a,p){
 
   $("fbText").textContent=
     p.level===12
-      ?"Bunpou ini sudah mencapai SRS 12."
+      ?"Contoh soal ini sudah mencapai SRS 12."
       :`Review berikutnya ${when(p.dueAt)}.`;
 
   $("nextBtn").className="next on";
@@ -1065,15 +1144,14 @@ function wrong(a,p){
   const before=p.level;
 
   p.level=Math.max(0,p.level-1);
-  p.q=(p.q||0)+1;
   p.last="wrong";
   p.lastAt=Date.now();
   p.dueAt=Date.now()+WRONG;
 
-  sp(current.id,p);
+  saveQuestionProgress(current,p);
 
   track(p.level);
-  $("levelBadge").textContent=`SRS ${p.level} / 12`;
+  $("levelBadge").textContent=`SRS ${p.level} / 12 · Contoh ${current.exampleIndex+1}/${current.exampleTotal}`;
 
   $("feedback").className="feedback on bad";
   $("fbTitle").textContent=`✕ Salah · SRS ${before} → ${p.level}`;
