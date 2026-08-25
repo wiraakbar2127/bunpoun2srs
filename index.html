@@ -32,10 +32,8 @@ button,input{font:inherit}button{cursor:pointer}
 .item h3{margin:0 0 7px}.item p{margin:0;color:var(--muted);line-height:1.5;font-size:13px}
 .chips{display:flex;gap:7px;margin-top:13px;flex-wrap:wrap}
 .chip{padding:5px 8px;border-radius:999px;background:#f7f2f0;font-size:11px;font-weight:800;color:var(--muted)}
-.chip.red{background:var(--red2);color:var(--red)}.chip.green{background:var(--green2);color:var(--green)}
-.item-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:13px}.item-actions .chips{margin-top:0;flex:1}
-.delete-btn{width:34px;height:34px;flex:0 0 34px;border:1px solid #ffd2d5;background:#fff5f5;color:var(--red);border-radius:10px;padding:0;display:grid;place-items:center}.delete-btn:hover{background:#ffe9ea}.delete-btn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.study{max-width:830px;margin:auto}.back{position:fixed;z-index:35;top:88px;left:max(14px,calc((100vw - 1040px)/2 - 54px));width:42px;height:42px;border:1px solid #ffc8cc;background:rgba(255,240,241,.96);color:var(--red);border-radius:13px;padding:0;margin:0;display:grid;place-items:center;box-shadow:0 8px 24px rgba(61,40,35,.12);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}.back:hover{background:#ffe2e4;transform:translateY(-1px)}.back:active{transform:translateY(0)}.back svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.chip.red{background:var(--red2);color:var(--red)}.chip.green{background:var(--green2);color:var(--green)}.delete-btn{margin-top:12px;border:1px solid #ffd2d5;background:#fff5f5;color:var(--red);border-radius:10px;padding:7px 10px;font-size:12px;font-weight:900}.delete-btn:hover{background:#ffe9ea}
+.study{max-width:830px;margin:auto}.back{border:0;background:none;color:var(--muted);font-weight:800;padding:0;margin:8px 0 18px}
 .study h1{font-size:42px;margin:0}.meaning{color:var(--muted);font-size:18px;margin:5px 0 20px}
 .box,.example{background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:12px}
 .box small{display:block;text-transform:uppercase;font-weight:900;color:var(--muted);letter-spacing:.06em;margin-bottom:7px}
@@ -56,28 +54,29 @@ ruby rt{font-size:.52em;color:#6f6666}
 .yomi button{border:0;border-radius:999px;background:var(--red);color:#fff;font-weight:900;padding:14px 24px;box-shadow:0 10px 25px rgba(221,66,72,.25)}
 .yomi button:disabled{opacity:.4;cursor:not-allowed}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:18px}
-.stat{background:#fff;border:1px solid var(--line);border-radius:17px;padding:15px}
-.stat small{color:var(--muted);font-weight:900;text-transform:uppercase}.stat b{display:block;font-size:28px;margin-top:4px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;max-width:900px;margin:22px auto 0}
+.stat{background:rgba(255,255,255,.72);border:1px solid var(--line);border-radius:15px;padding:13px 15px}
+.stat small{color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.035em}.stat b{display:block;font-size:25px;margin-top:3px}
 
-.review{max-width:900px;margin:auto}.rhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.review{max-width:900px;margin:auto;scroll-margin-top:92px}#review .hero{max-width:900px;margin:8px auto 16px}#review .hero h1{font-size:clamp(30px,4vw,42px)}
+.rhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .badge{background:#fff;border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-weight:900}
 .queue{font-size:12px;color:var(--muted);font-weight:800}
 .track{display:grid;grid-template-columns:repeat(12,1fr);gap:5px;margin-bottom:16px}
 .dot{height:7px;background:#eadfdb;border-radius:99px}.dot.on{background:var(--red)}.dot.done{background:var(--green)}
 .card{background:#fff;border:1px solid var(--line);border-radius:28px;box-shadow:var(--shadow);padding:44px 25px 30px;min-height:430px;display:flex;flex-direction:column;justify-content:center}
-.sentence{font-size:clamp(20px,3.3vw,31px);font-weight:720;line-height:2.05;text-align:center}
+.sentence{font-size:clamp(25px,4vw,38px);font-weight:750;line-height:2;text-align:center}
 .sentence-blank{display:inline-block;min-width:3.4em;min-height:1.35em;border-bottom:3px solid var(--red);color:var(--red);font-weight:900;padding:0 .15em .02em;vertical-align:baseline;transition:.15s}
-.sentence-blank.ok{border-color:var(--green);color:var(--green);background:var(--green2)}.sentence-blank.bad{border-color:var(--red);color:var(--red);background:var(--red2)}
+.sentence-blank.ok,.sentence-blank.corrected{border-color:var(--green);color:var(--green);background:var(--green2)}.sentence-blank.bad{border-color:var(--red);color:var(--red);background:var(--red2)}
 .answer-form{margin:20px auto 0;width:min(460px,100%)}.answer-label{display:block;text-align:left;font-size:12px;color:var(--muted);font-weight:900;margin:0 0 7px 4px;text-transform:uppercase;letter-spacing:.05em}
 .answer{display:block;width:100%;border:2px solid var(--line);border-radius:15px;background:#fff;outline:0;text-align:center;font-size:22px;font-weight:900;padding:12px 14px;transition:.15s}
 .answer:focus{border-color:var(--red);box-shadow:0 0 0 4px var(--red2)}.answer.ok{border-color:var(--green);color:var(--green);background:var(--green2)}.answer.bad{border-color:var(--red);color:var(--red);background:var(--red2)}
-.review-tools{display:flex;align-items:center;gap:8px}.srs-always-tools{display:flex;justify-content:flex-end;align-items:center;margin:-6px 0 14px}.refresh-btn{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px 12px;font-weight:900;color:var(--text);box-shadow:0 5px 14px rgba(61,40,35,.05)}.refresh-btn:hover{background:#faf5f3}
+.review-tools{display:flex;align-items:center;gap:8px}.refresh-btn{border:1px solid var(--line);background:#fff;border-radius:11px;padding:7px 10px;font-weight:900;color:var(--text)}.refresh-btn:hover{background:#faf5f3}
 .trans{text-align:center;color:#655c59;font-size:17px;line-height:1.7;margin:18px auto 0;max-width:760px}
 .trans mark{background:none;color:var(--red);font-weight:900}
 .help{text-align:center;font-size:12px;color:var(--muted);margin-top:20px}
-.feedback{display:none;text-align:center;border-top:1px solid var(--line);padding-top:18px;margin:24px auto 0;max-width:700px}
-.feedback.on{display:block}.feedback.ok{color:var(--green)}.feedback.bad{color:var(--red)}.feedback p{color:var(--muted);margin:7px 0 0}
+.feedback{display:none;text-align:center;border:1px solid var(--line);border-radius:14px;padding:13px 16px;margin:16px auto 0;max-width:700px;font-size:16px}
+.feedback.on{display:block}.feedback.ok{color:var(--green);background:var(--green2);border-color:#ccebdc}.feedback.bad{color:var(--red);background:var(--red2);border-color:#ffd6d8}.feedback b{font-size:18px}.feedback p{color:#655c59;font-size:15px;line-height:1.55;margin:6px 0 0}
 .next{display:none;margin:18px auto 0;border:0;border-radius:999px;background:var(--text);color:#fff;padding:11px 20px;font-weight:900}.next.on{display:block}
 .empty{background:#fff;border:1px solid var(--line);border-radius:22px;padding:50px 20px;text-align:center}
 .empty h3{margin:0 0 7px}.empty p{margin:0;color:var(--muted)}
@@ -85,13 +84,12 @@ dialog{border:0;border-radius:21px;padding:0;width:min(620px,calc(100% - 28px));
 dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
 .modal{padding:23px}.modal h2{margin:0 0 8px}.modal p{color:var(--muted);line-height:1.6}
 .actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
-.sync-note{background:#faf6f4;border:1px solid var(--line);border-radius:14px;padding:13px 14px;color:var(--muted);font-size:13px;line-height:1.6;margin:14px 0}.sync-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.sync-actions .btn{padding:12px}
 .warn{background:var(--red2);color:#972f34;border:1px solid #ffd6d8;border-radius:14px;padding:13px;line-height:1.55}
 .hide{display:none!important}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(15px);opacity:0;background:var(--text);color:#fff;padding:10px 14px;border-radius:12px;font-size:13px;font-weight:800;transition:.2s;z-index:50}
 .toast.on{opacity:1;transform:translateX(-50%)}
-@media(max-width:760px){.top{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.card{padding:34px 15px}.sentence{font-size:20px;line-height:2.2}.rhead{align-items:flex-start;gap:10px}.review-tools{flex-wrap:wrap;justify-content:flex-end}.back{top:132px;left:14px}}
-@media(max-width:500px){.grid{grid-template-columns:1fr}.nav .btn{font-size:12px;padding:8px 9px}.sync-actions{grid-template-columns:1fr}}
+@media(max-width:760px){.top{align-items:flex-start;flex-direction:column}.grid{grid-template-columns:1fr 1fr}.stats{grid-template-columns:1fr 1fr}.review{scroll-margin-top:130px}.card{padding:34px 15px;min-height:390px}.sentence{font-size:25px;line-height:2.15}.rhead{align-items:flex-start;gap:10px}.review-tools{flex-wrap:wrap;justify-content:flex-end}#review .hero{margin-bottom:14px}}
+@media(max-width:500px){.grid{grid-template-columns:1fr}.nav .btn{font-size:12px;padding:8px 9px}}
 </style>
 </head>
 <body>
@@ -104,14 +102,10 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
   <div class="nav">
     <button class="btn active" data-page="library">Lampiran</button>
     <button class="btn" data-page="review">SRS</button>
-    <button class="btn icon-btn" id="saveDataBtn" type="button" title="Save / Sinkron" aria-label="Save / Sinkron">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></svg>
-    </button>
-    <button class="btn red icon-btn" id="uploadJsonBtn" type="button" title="Upload banyak JSON" aria-label="Upload banyak JSON">
+    <button class="btn red icon-btn" id="uploadJsonBtn" type="button" title="Upload JSON" aria-label="Upload JSON">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
     </button>
-    <input class="hide" id="jsonFileInput" type="file" accept=".json,application/json" multiple>
-    <input class="hide" id="saveImportInput" type="file" accept=".json,application/json">
+    <input class="hide" id="jsonFileInput" type="file" accept=".json,application/json">
   </div>
 </header>
 
@@ -125,7 +119,7 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
 
 <section class="page" id="study">
   <div class="study">
-    <button class="back" id="backBtn" type="button" title="Kembali" aria-label="Kembali"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="back" id="backBtn">← Kembali</button>
     <h1 id="sg"></h1>
     <div class="meaning" id="sm"></div>
     <div class="box" id="functionBox">
@@ -150,17 +144,7 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
     <p>Semua contoh kalimat pada Lampiran menjadi soal SRS. Ketik jawaban di kolom bawah; teks akan muncul bersamaan pada bagian kosong di kalimat.</p>
   </div>
 
-  <div class="stats">
-    <div class="stat"><small>Total Soal</small><b id="stTotal">0</b></div>
-    <div class="stat"><small>Yomimashita</small><b id="stRead">0</b></div>
-    <div class="stat"><small>Due</small><b id="stDue">0</b></div>
-    <div class="stat"><small>Mastered</small><b id="stMaster">0</b></div>
-  </div>
-
-  <div class="review">
-    <div class="srs-always-tools">
-      <button class="refresh-btn" id="refreshBtn" type="button" title="Refresh soal SRS" aria-label="Refresh soal SRS">↻ Refresh</button>
-    </div>
+  <div class="review" id="reviewFocus">
     <div class="empty hide" id="reviewEmpty">
       <h3>Belum ada review yang jatuh tempo.</h3>
       <p>Baca bunpou baru atau kembali saat jadwal berikutnya tiba.</p>
@@ -169,7 +153,7 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
     <div id="reviewArea" class="hide">
       <div class="rhead">
         <div class="badge" id="levelBadge"></div>
-        <div class="review-tools"><div class="queue" id="queueText"></div></div>
+        <div class="review-tools"><div class="queue" id="queueText" aria-live="polite"></div><button class="refresh-btn" id="refreshBtn" type="button">↻ Refresh</button></div>
       </div>
 
       <div class="track" id="track"></div>
@@ -177,18 +161,25 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
       <div class="card">
         <div class="sentence" id="sentence"></div>
         <div class="trans" id="translation"></div>
+        <div class="feedback" id="feedback" aria-live="polite">
+          <b id="fbTitle"></b>
+          <p id="fbText"></p>
+        </div>
         <form id="answerForm" class="answer-form">
           <label class="answer-label" for="answer">Jawaban</label>
           <input id="answer" class="answer" lang="ja-JP" inputmode="text" enterkeyhint="done" autocapitalize="none" autocomplete="off" spellcheck="false" aria-label="Jawaban bunpou">
         </form>
         <div class="help">Ketik di kolom jawaban → Enter · teks juga muncul di kalimat</div>
-        <div class="feedback" id="feedback">
-          <b id="fbTitle"></b>
-          <p id="fbText"></p>
-        </div>
         <button class="next" id="nextBtn">Lanjut →</button>
       </div>
     </div>
+  </div>
+
+  <div class="stats" aria-label="Ringkasan progres SRS">
+    <div class="stat"><small>Total Soal</small><b id="stTotal">0</b></div>
+    <div class="stat"><small>Yomimashita</small><b id="stRead">0</b></div>
+    <div class="stat"><small>Due</small><b id="stDue">0</b></div>
+    <div class="stat"><small>Mastered</small><b id="stMaster">0</b></div>
   </div>
 </section>
 </div>
@@ -201,19 +192,6 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
       <button class="btn" id="stayBtn">Nanti</button>
       <button class="btn red" id="startBtn">Mulai SRS</button>
     </div>
-  </div>
-</dialog>
-
-<dialog id="saveDialog">
-  <div class="modal">
-    <h2>Save & Sinkron</h2>
-    <p>Progress disimpan otomatis di browser ini. Untuk memindahkan progress ke web/mobile lain, export save dari perangkat ini lalu import file save di perangkat tujuan.</p>
-    <div class="sync-note">File save berisi seluruh bunpou, status Yomimashita, level SRS setiap contoh kalimat, dan jadwal review.</div>
-    <div class="sync-actions">
-      <button class="btn red" id="exportSaveBtn" type="button">Export Save</button>
-      <button class="btn" id="importSaveBtn" type="button">Import Save</button>
-    </div>
-    <div class="actions" style="margin-top:14px"><button class="btn" id="closeSaveBtn" type="button">Tutup</button></div>
   </div>
 </dialog>
 
@@ -234,10 +212,8 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
 <div class="toast" id="toast"></div>
 
 <script>
-const KEY="bunpou_data_v7";
-const PKEY="bunpou_progress_v7";
-const LEGACY_KEY="bunpou_data_v6";
-const LEGACY_PKEY="bunpou_progress_v6";
+const KEY="bunpou_data_v6";
+const PKEY="bunpou_progress_v6";
 
 const INTERVAL=[
   4*3600000,
@@ -257,8 +233,8 @@ const WRONG=10*60000;
 
 const $=id=>document.getElementById(id);
 
-let decks=load(KEY,null) ?? load(LEGACY_KEY,[]);
-let prog=load(PKEY,null) ?? load(LEGACY_PKEY,{});
+let decks=load(KEY,[]);
+let prog=load(PKEY,{});
 let studyId=null;
 let due=[];
 let current=null;
@@ -266,20 +242,6 @@ let retry11=false;
 let locked=false;
 let enterToNext=false;
 let observer=null;
-
-// Simpan posisi scroll tiap lapisan navigasi agar tombol Back kembali tepat ke posisi sebelumnya.
-const scrollMemory={library:0,levels:{},days:{}};
-
-function dayScrollKey(level,day){
-  return `${String(level||"").toUpperCase()}::${String(normalizeDay(day))}`;
-}
-
-function restoreScroll(y){
-  const top=Math.max(0,Number(y)||0);
-  requestAnimationFrame(()=>{
-    requestAnimationFrame(()=>window.scrollTo({top,left:0,behavior:"auto"}));
-  });
-}
 
 function load(k,f){
   try{
@@ -318,91 +280,45 @@ function sp(id,p){
   save();
 }
 
-function questionKey(deckId,q,index){
-  return `${deckId}::${q?.id || `example-${index+1}`}`;
-}
-
-function questionProgress(d,q,index){
-  const key=questionKey(d.id,q,index);
-  if(prog[key]) return prog[key];
-
-  // Migrasi progress v6: kartu contoh mengikuti progress bunpou lama saat pertama dibuka.
-  const legacy=prog[d.id];
-  if(legacy?.studied){
-    return {
-      level:Number(legacy.level)||0,
-      dueAt:legacy.dueAt ?? Date.now(),
-      last:legacy.last || null,
-      lastAt:legacy.lastAt || null
-    };
-  }
-
-  return {level:0,dueAt:null,last:null,lastAt:null};
-}
-
-function setQuestionProgress(key,p){
-  prog[key]=p;
-  save();
-}
-
-function clearProgressForDeck(id){
-  delete prog[id];
-  Object.keys(prog).forEach(key=>{
-    if(key.startsWith(`${id}::`)) delete prog[key];
-  });
-}
-
 function deck(id){
   return decks.find(x=>x.id===id);
 }
 
-function reviewCards(){
-  const cards=[];
-
-  decks.forEach(d=>{
-    if(!gp(d.id).studied) return;
-    questionPool(d).forEach((q,index)=>{
-      const key=questionKey(d.id,q,index);
-      const p=questionProgress(d,q,index);
-      cards.push({deck:d,q,index,key,p});
-    });
-  });
-
-  return cards;
+function isDue(d){
+  const p=gp(d.id);
+  return p.studied && p.level<12 && (!p.dueAt || p.dueAt<=Date.now());
 }
 
-function isCardDue(card){
-  const p=questionProgress(card.deck,card.q,card.index);
-  return p.level<12 && (!p.dueAt || p.dueAt<=Date.now());
-}
-
-function deckDueCount(d){
-  if(!gp(d.id).studied) return 0;
-  return questionPool(d).reduce((n,q,index)=>{
-    const card={deck:d,q,index};
-    return n+(isCardDue(card)?1:0);
-  },0);
-}
-
-function deckMasteredCount(d){
-  if(!gp(d.id).studied) return 0;
-  return questionPool(d).reduce((n,q,index)=>n+(questionProgress(d,q,index).level===12?1:0),0);
-}
-
-function go(name,options={}){
-  const {render=true,scrollTop=true}=options;
-
+function go(name){
   document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));
   $(name).classList.add("on");
   document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===name));
 
-  if(render && name==="library") renderLibrary();
+  if(name==="library") renderLibrary();
   if(name==="review"){
-    renderStats();
     startReview();
+    focusReview();
+    return;
   }
 
-  if(scrollTop) window.scrollTo({top:0,left:0,behavior:"auto"});
+  scrollTo(0,0);
+}
+
+function focusReview(){
+  requestAnimationFrame(()=>{
+    const motion=matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
+    $("reviewFocus").scrollIntoView({behavior:motion,block:"start"});
+    if(current){
+      setTimeout(()=>$("answer").focus({preventScroll:true}),motion==="smooth"?280:0);
+    }
+  });
+}
+
+function revealCorrection(){
+  requestAnimationFrame(()=>{
+    const motion=matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth";
+    $("sentence").scrollIntoView({behavior:motion,block:"center"});
+  });
 }
 
 document.querySelectorAll("[data-page]").forEach(b=>{
@@ -578,7 +494,7 @@ function renderLibrary(){
     const items=decks.filter(d=>String(d.level||"").toUpperCase()===level);
     const days=[...new Set(items.map(d=>normalizeDay(d.day)))].filter(v=>v!=="" && v!==null);
     const studied=items.filter(d=>gp(d.id).studied).length;
-    const dueCount=items.reduce((n,d)=>n+deckDueCount(d),0);
+    const dueCount=items.filter(isDue).length;
 
     const x=document.createElement("div");
     x.className="item";
@@ -590,10 +506,7 @@ function renderLibrary(){
         <span class="chip">${items.length?"Buka level":"Kosong"}</span>
       </div>
     `;
-    x.onclick=()=>{
-      scrollMemory.library=window.scrollY;
-      openLevel(level);
-    };
+    x.onclick=()=>openLevel(level);
     w.appendChild(x);
   });
 }
@@ -610,7 +523,7 @@ function dayLabel(day){
   return `DAY ${String(day).replace(/^day\s*/i,"")}`;
 }
 
-function openLevel(level,options={}){
+function openLevel(level){
   const items=decks.filter(d=>String(d.level||"").toUpperCase()===level);
   const dayMap={};
 
@@ -629,7 +542,7 @@ function openLevel(level,options={}){
   const w=$("libraryGrid");
   w.innerHTML=`
     <div style="grid-column:1/-1">
-      <button class="back" id="backLevels" type="button" title="Kembali ke semua level" aria-label="Kembali ke semua level"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button class="back" id="backLevels">← Semua level</button>
       <div class="hero" style="margin-top:0">
         <h1 style="font-size:32px">${level}</h1>
         <p>Pilih DAY untuk membuka kumpulan bunpou pada level ${level}.</p>
@@ -650,24 +563,22 @@ function openLevel(level,options={}){
     dayKeys.forEach(day=>{
       const list=dayMap[day];
       const studied=list.filter(d=>gp(d.id).studied).length;
-      const dueCount=list.reduce((n,d)=>n+deckDueCount(d),0);
+      const dueCount=list.filter(isDue).length;
 
       const x=document.createElement("div");
       x.className="item";
       x.innerHTML=`
         <h3>📁 ${dayLabel(normalizeDay(day))}</h3>
         <p>${list.length} bunpou · ${studied} sudah dibaca</p>
-        <div class="item-actions">
-          <div class="chips">
-            ${dueCount?`<span class="chip red">${dueCount} due</span>`:""}
-          </div>
-          <button class="delete-btn" type="button" title="Hapus DAY" aria-label="Hapus DAY"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg></button>
+        <div class="chips">
+          ${dueCount?`<span class="chip red">${dueCount} due</span>`:""}
+          <span class="chip">Buka DAY</span>
         </div>
+        <button class="delete-btn" type="button">Hapus DAY</button>
       `;
 
       x.onclick=e=>{
         if(e.target.closest(".delete-btn")) return;
-        scrollMemory.levels[level]=window.scrollY;
         openDay(level,day,list);
       };
 
@@ -680,18 +591,7 @@ function openLevel(level,options={}){
     });
   }
 
-  setTimeout(()=>{
-    $("backLevels").onclick=()=>{
-      renderLibrary();
-      restoreScroll(scrollMemory.library);
-    };
-  },0);
-
-  if(options.restoreY!==undefined){
-    restoreScroll(options.restoreY);
-  }else{
-    window.scrollTo({top:0,left:0,behavior:"auto"});
-  }
+  setTimeout(()=>$("backLevels").onclick=renderLibrary,0);
 }
 
 function deleteDay(level,day){
@@ -717,7 +617,7 @@ function deleteDay(level,day){
   decks=decks.filter(item=>!ids.has(item.id));
 
   ids.forEach(id=>{
-    clearProgressForDeck(id);
+    delete prog[id];
   });
 
   save();
@@ -726,11 +626,11 @@ function deleteDay(level,day){
   openLevel(level);
 }
 
-function openDay(level,day,items,options={}){
+function openDay(level,day,items){
   const w=$("libraryGrid");
   w.innerHTML=`
     <div style="grid-column:1/-1">
-      <button class="back" id="backDays" type="button" title="Kembali ke ${level}" aria-label="Kembali ke ${level}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+      <button class="back" id="backDays">← ${level}</button>
       <div class="hero" style="margin-top:0">
         <h1 style="font-size:32px">${level} · ${dayLabel(normalizeDay(day))}</h1>
         <p>Pilih bunpou untuk membaca lampiran contoh kalimat.</p>
@@ -740,27 +640,22 @@ function openDay(level,day,items,options={}){
 
   items.forEach(d=>{
     const p=gp(d.id);
-    const totalQuestions=questionPool(d).length;
-    const masteredQuestions=deckMasteredCount(d);
     const x=document.createElement("div");
     x.className="item";
     x.innerHTML=`
       <h3>${esc(d.grammar)}</h3>
-      <p>${esc(d.meaning||"")} · ${totalQuestions} contoh / soal SRS</p>
-      <div class="item-actions">
-        <div class="chips">
-          <span class="chip ${p.studied?"green":""}">
-            ${p.studied?"✓ Yomimashita":"Belum dibaca"}
-          </span>
-          ${p.studied?`<span class="chip">SRS ${masteredQuestions}/${totalQuestions} mastered</span>`:""}
-        </div>
-        <button class="delete-btn" type="button" title="Hapus bunpou" aria-label="Hapus bunpou"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></svg></button>
+      <p>${esc(d.meaning||"")} · ${(d.examples||[]).length} contoh</p>
+      <div class="chips">
+        <span class="chip ${p.studied?"green":""}">
+          ${p.studied?"✓ Yomimashita":"Belum dibaca"}
+        </span>
+        ${p.studied?`<span class="chip">SRS ${p.level}/12</span>`:""}
       </div>
+      <button class="delete-btn" type="button">Hapus</button>
     `;
 
     x.onclick=e=>{
       if(e.target.closest(".delete-btn")) return;
-      scrollMemory.days[dayScrollKey(level,day)]=window.scrollY;
       openStudy(d.id);
     };
 
@@ -772,15 +667,7 @@ function openDay(level,day,items,options={}){
     w.appendChild(x);
   });
 
-  setTimeout(()=>{
-    $("backDays").onclick=()=>openLevel(level,{restoreY:scrollMemory.levels[level]??0});
-  },0);
-
-  if(options.restoreY!==undefined){
-    restoreScroll(options.restoreY);
-  }else{
-    window.scrollTo({top:0,left:0,behavior:"auto"});
-  }
+  setTimeout(()=>$("backDays").onclick=()=>openLevel(level),0);
 }
 
 function deleteBunpou(id,level,day){
@@ -795,7 +682,7 @@ function deleteBunpou(id,level,day){
   if(!ok) return;
 
   decks=decks.filter(item=>item.id!==id);
-  clearProgressForDeck(id);
+  delete prog[id];
   save();
 
   const remaining=decks.filter(
@@ -871,8 +758,8 @@ $("backBtn").onclick=()=>{
     String(normalizeDay(item.day))===String(day)
   );
 
-  go("library",{render:false,scrollTop:false});
-  openDay(level,day,items,{restoreY:scrollMemory.days[dayScrollKey(level,day)]??0});
+  go("library");
+  openDay(level,day,items);
 };
 
 function setFunctionEditMode(editing){
@@ -908,16 +795,11 @@ $("yomiBtn").onclick=()=>{
   const p=gp(studyId);
 
   p.studied=true;
-  sp(studyId,p);
+  if(p.level<12 && !p.dueAt){
+    p.dueAt=Date.now();
+  }
 
-  // Setiap contoh kalimat adalah kartu SRS mandiri dan langsung due setelah Yomimashita.
-  questionPool(d).forEach((q,index)=>{
-    const key=questionKey(d.id,q,index);
-    if(!prog[key]){
-      prog[key]={level:0,dueAt:Date.now(),last:null,lastAt:null};
-    }
-  });
-  save();
+  sp(studyId,p);
 
   $("yomiBtn").textContent="✓ 読みました · Sudah dibaca";
   $("startName").textContent=d.grammar;
@@ -951,19 +833,18 @@ $("startBtn").onclick=()=>{
 };
 
 function renderStats(){
-  const cards=reviewCards();
-  $("stTotal").textContent=decks.reduce((n,d)=>n+questionPool(d).length,0);
+  $("stTotal").textContent=decks.length;
   $("stRead").textContent=decks.filter(d=>gp(d.id).studied).length;
-  $("stDue").textContent=cards.filter(isCardDue).length;
-  $("stMaster").textContent=cards.filter(card=>questionProgress(card.deck,card.q,card.index).level===12).length;
+  $("stDue").textContent=decks.filter(isDue).length;
+  $("stMaster").textContent=decks.filter(d=>gp(d.id).level===12).length;
 }
 
 function startReview(){
   renderStats();
 
-  due=reviewCards()
-    .filter(isCardDue)
-    .sort((a,b)=>(questionProgress(a.deck,a.q,a.index).dueAt||0)-(questionProgress(b.deck,b.q,b.index).dueAt||0));
+  due=decks
+    .filter(isDue)
+    .sort((a,b)=>(gp(a.id).dueAt||0)-(gp(b.id).dueAt||0));
 
   $("reviewEmpty").classList.toggle("hide",due.length>0);
   $("reviewArea").classList.toggle("hide",!due.length);
@@ -1043,13 +924,13 @@ function renderCard(){
   enterToNext=false;
   retry11=false;
 
-  const p=questionProgress(current.deck,current.q,current.index);
-  const q=current.q;
+  const p=gp(current.id);
+  const q=question(current);
 
   current._q=q;
 
   $("levelBadge").textContent=`SRS ${p.level} / 12`;
-  $("queueText").textContent=`${due.length} soal review tersisa`;
+  $("queueText").textContent=`${due.length} review tersisa`;
 
   track(p.level);
 
@@ -1069,10 +950,10 @@ function renderCard(){
   const mirror=$("answerMirror");
   if(mirror){
     mirror.textContent="　";
-    mirror.classList.remove("ok","bad");
+    mirror.classList.remove("ok","bad","corrected");
   }
   attachJapaneseTyping(a);
-  a.focus();
+  a.focus({preventScroll:true});
 }
 
 $("answerForm").onsubmit=e=>{
@@ -1100,7 +981,7 @@ function submit(){
   if(!a.value.trim()) return;
 
   const q=current._q;
-  const p=questionProgress(current.deck,current.q,current.index);
+  const p=gp(current.id);
 
   const accepted=q.accepted?.length ? q.accepted : [q.answer];
   const ok=accepted.some(x=>norm(x)===norm(a.value));
@@ -1130,7 +1011,8 @@ function correct(a,p){
   a.classList.add("ok");
   const mirror=$("answerMirror");
   if(mirror){
-    mirror.classList.remove("bad");
+    mirror.textContent=current._q.answer;
+    mirror.classList.remove("bad","corrected");
     mirror.classList.add("ok");
   }
   a.disabled=true;
@@ -1138,13 +1020,14 @@ function correct(a,p){
   const old=p.level;
 
   p.level=Math.min(12,p.level+1);
+  p.q=(p.q||0)+1;
   p.last="correct";
   p.lastAt=Date.now();
   p.dueAt=p.level===12
     ?null
     :Date.now()+(INTERVAL[old]||INTERVAL[10]);
 
-  setQuestionProgress(current.key,p);
+  sp(current.id,p);
 
   track(p.level);
   $("levelBadge").textContent=`SRS ${p.level} / 12`;
@@ -1163,6 +1046,7 @@ function correct(a,p){
   $("nextBtn").className="next on";
   enterToNext=true;
   renderStats();
+  revealCorrection();
 }
 
 function wrong(a,p){
@@ -1171,17 +1055,22 @@ function wrong(a,p){
 
   a.classList.add("bad");
   const mirror=$("answerMirror");
-  if(mirror) mirror.classList.add("bad");
+  if(mirror){
+    mirror.textContent=current._q.answer;
+    mirror.classList.remove("bad","ok");
+    mirror.classList.add("corrected");
+  }
   a.disabled=true;
 
   const before=p.level;
 
   p.level=Math.max(0,p.level-1);
+  p.q=(p.q||0)+1;
   p.last="wrong";
   p.lastAt=Date.now();
   p.dueAt=Date.now()+WRONG;
 
-  setQuestionProgress(current.key,p);
+  sp(current.id,p);
 
   track(p.level);
   $("levelBadge").textContent=`SRS ${p.level} / 12`;
@@ -1193,6 +1082,7 @@ function wrong(a,p){
 
   $("nextBtn").className="next on";
   renderStats();
+  revealCorrection();
 }
 
 $("retryBtn").onclick=()=>{
@@ -1205,7 +1095,7 @@ $("retryBtn").onclick=()=>{
   const mirror=$("answerMirror");
   if(mirror){
     mirror.textContent="　";
-    mirror.classList.remove("bad");
+    mirror.classList.remove("bad","corrected");
   }
   a.focus();
 };
@@ -1213,6 +1103,7 @@ $("retryBtn").onclick=()=>{
 $("nextBtn").onclick=()=>startReview();
 $("refreshBtn").onclick=()=>{
   startReview();
+  focusReview();
   toast("SRS diperbarui");
 };
 
@@ -1281,29 +1172,14 @@ $("uploadJsonBtn").onclick=()=>{
 };
 
 $("jsonFileInput").onchange=async e=>{
-  const files=[...(e.target.files||[])];
-  if(!files.length) return;
+  const file=e.target.files?.[0];
+  if(!file) return;
 
   try{
-    const all=[];
+    const data=JSON.parse(await file.text());
+    validate(data);
 
-    for(const file of files){
-      let data;
-      try{
-        data=JSON.parse(await file.text());
-        validate(data);
-      }catch(err){
-        throw Error(`${file.name}: ${err.message}`);
-      }
-      all.push(...data);
-    }
-
-    // Jika ID yang sama muncul di beberapa file, versi dari file terakhir yang dipilih dipakai.
-    const incomingMap=new Map();
-    all.forEach(item=>incomingMap.set(item.id,item));
-    const data=[...incomingMap.values()];
     const incomingIds=new Set(data.map(d=>d.id));
-
     decks=[
       ...decks.filter(d=>!incomingIds.has(d.id)),
       ...data
@@ -1314,67 +1190,10 @@ $("jsonFileInput").onchange=async e=>{
     renderStats();
 
     const levels=[...new Set(data.map(d=>d.level))].join(", ");
-    toast(`${files.length} file · ${data.length} bunpou diupload · ${levels}`);
+    const days=[...new Set(data.map(d=>dayLabel(normalizeDay(d.day))))].join(", ");
+    toast(`${data.length} bunpou diupload · ${levels} · ${days}`);
   }catch(err){
-    alert("Upload JSON dibatalkan:\n\n"+err.message);
-  }
-
-  e.target.value="";
-};
-
-$("saveDataBtn").onclick=()=>$("saveDialog").showModal();
-$("closeSaveBtn").onclick=()=>$("saveDialog").close();
-$("importSaveBtn").onclick=()=>$("saveImportInput").click();
-
-$("exportSaveBtn").onclick=()=>{
-  save();
-  const payload={
-    type:"bunpou-srs-save",
-    version:7,
-    exportedAt:new Date().toISOString(),
-    decks,
-    prog
-  };
-
-  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  const stamp=new Date().toISOString().slice(0,10);
-  a.href=url;
-  a.download=`bunpou-srs-save-${stamp}.json`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1000);
-  toast("Save berhasil diexport");
-};
-
-$("saveImportInput").onchange=async e=>{
-  const file=e.target.files?.[0];
-  if(!file) return;
-
-  try{
-    const payload=JSON.parse(await file.text());
-    if(payload?.type!=="bunpou-srs-save" || !Array.isArray(payload.decks) || !payload.prog || typeof payload.prog!=="object"){
-      throw Error("File ini bukan format Bunpou SRS Save yang valid.");
-    }
-
-    validate(payload.decks);
-
-    if(!confirm("Import save akan mengganti data dan progress yang ada di perangkat ini. Lanjutkan?")){
-      e.target.value="";
-      return;
-    }
-
-    decks=payload.decks;
-    prog=payload.prog;
-    save();
-    $("saveDialog").close();
-    go("library");
-    renderStats();
-    toast("Save berhasil diimport");
-  }catch(err){
-    alert("Import save gagal:\n\n"+err.message);
+    alert("File JSON tidak valid:\n\n"+err.message);
   }
 
   e.target.value="";
@@ -1387,8 +1206,6 @@ function toast(s){
   setTimeout(()=>t.classList.remove("on"),1800);
 }
 
-// Simpan ke key v7 agar data lama yang ditemukan ikut termigrasi.
-save();
 renderLibrary();
 renderStats();
 </script>
