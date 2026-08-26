@@ -145,6 +145,12 @@ body{
   overflow-x:hidden;
   transition:--scene-a .55s ease,--scene-b .55s ease,--scene-c .55s ease,--scene-glow .55s ease;
 }
+body.review-scene{
+  background:#f4f1ea;
+  color:var(--text);
+  transition:none;
+}
+body.review-scene .review .queue{color:var(--muted)}
 
 button,input,textarea{font:inherit}
 button{transition:transform .18s ease,background .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease}
@@ -314,8 +320,6 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
   border-radius:15px;
   background:rgba(255,255,255,.82);
 }
-.review-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:20px}
-.review-hero>div{min-width:0}.persistent-refresh{flex:0 0 auto;margin-bottom:2px;padding:9px 13px}
 .review-stats{max-width:920px;margin:24px auto 0;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;overflow:visible;border:0;border-radius:0;background:transparent}
 .status-card{min-height:58px;padding:10px 13px;border:1px solid var(--line);border-radius:12px;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left;color:var(--text);box-shadow:0 4px 15px rgba(35,31,25,.035);cursor:pointer}
 .status-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(35,31,25,.065)}
@@ -323,6 +327,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .status-card small{display:block;font-size:9px;line-height:1.35;letter-spacing:.07em;text-transform:uppercase;color:inherit;opacity:.72}
 .status-card b{display:block;flex:0 0 auto;margin:0;font-size:21px;letter-spacing:-.04em}
 .status-new{background:#f2f1ed;color:#656159}.status-learning{background:#eef2ff;border-color:#d7dffc;color:#3553bd}.status-mastered{background:#edf8f2;border-color:#d3eadf;color:#176b47}.status-ready{background:#fff0ef;border-color:#f2d0ce;color:#b53834}
+.empty-refresh{display:flex;align-items:center;justify-content:center;gap:8px;margin:20px auto 0;padding:11px 18px;border:1px solid #d9d5cb;border-radius:11px;background:var(--text);color:#fff;font-size:12px;font-weight:850}.empty-refresh span{font-size:19px;line-height:1}.empty-refresh:hover{background:var(--red);border-color:var(--red);transform:translateY(-1px)}
 .status-detail{max-width:920px;margin:10px auto 0;padding:15px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.88);box-shadow:var(--soft-shadow);animation:pageIn .22s ease}
 .status-detail-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
 .status-detail-head>div{display:flex;align-items:baseline;gap:8px}.status-detail-head small{font-size:10px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}.status-detail-head b{font-size:13px}
@@ -417,7 +422,6 @@ dialog::backdrop{background:rgba(24,23,20,.34);backdrop-filter:blur(5px)}
   #library:not(.level-overview) .day-card{min-height:150px;padding:19px 49px 19px 19px}
   .item{min-height:132px;padding:16px}.item.day-card{padding-right:47px}.item h3{font-size:15px}
   .stats{grid-template-columns:repeat(3,1fr)}
-  .review-hero{align-items:center}.persistent-refresh{margin-bottom:0}
   .review-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
   .srs-levels{grid-template-columns:repeat(6,minmax(44px,1fr))}
   .status-items{grid-template-columns:1fr;max-height:220px}
@@ -448,7 +452,6 @@ dialog::backdrop{background:rgba(24,23,20,.34);backdrop-filter:blur(5px)}
   .item{min-height:118px}
   .hero h1{font-size:30px}
   .stats{border-radius:13px}.stat{padding:12px 7px}.stat small{font-size:8px}.stat b{font-size:20px}
-  .review-hero{gap:10px}.review-hero p{display:none}.persistent-refresh{padding:8px 10px}
   .status-card{min-height:54px;padding:9px 10px}.status-card b{font-size:19px}
   .srs-levels{grid-template-columns:repeat(4,minmax(48px,1fr))}
   .badge{padding:7px 9px}.queue{font-size:10px}.refresh-btn{padding:7px 8px}
@@ -494,7 +497,7 @@ dialog::backdrop{background:rgba(24,23,20,.34);backdrop-filter:blur(5px)}
     <div><b>Bunpou SRS</b><small>Baca → Yomimashita → Review</small></div>
   </div>
   <div class="nav">
-    <button class="btn active" data-page="library">Lampiran</button>
+    <button class="btn active" data-page="library">Home</button>
     <button class="btn" data-page="review">SRS</button>
     <button class="btn red icon-btn" id="uploadJsonBtn" type="button" title="Upload JSON" aria-label="Upload JSON">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
@@ -529,18 +532,11 @@ dialog::backdrop{background:rgba(24,23,20,.34);backdrop-filter:blur(5px)}
 </section>
 
 <section class="page" id="review">
-  <div class="hero review-hero">
-    <div>
-      <h1>Review SRS</h1>
-      <p>Semua contoh kalimat pada Lampiran menjadi soal SRS. Ketik jawaban di kolom bawah; teks akan muncul bersamaan pada bagian kosong di kalimat.</p>
-    </div>
-    <button class="refresh-btn persistent-refresh" id="refreshBtn" type="button">↻ Refresh</button>
-  </div>
-
   <div class="review">
     <div class="empty hide" id="reviewEmpty">
-      <h3>Belum ada review yang jatuh tempo.</h3>
-      <p>Baca bunpou baru atau kembali saat jadwal berikutnya tiba.</p>
+      <h3>Soal SRS sudah habis.</h3>
+      <p>Belum ada review yang jatuh tempo saat ini.</p>
+      <button class="empty-refresh" id="refreshBtn" type="button"><span aria-hidden="true">↻</span> Refresh SRS</button>
     </div>
 
     <div id="reviewArea" class="hide">
@@ -725,6 +721,10 @@ function withViewTransition(update){
 }
 
 function setLibraryScene(level){
+  if(document.body.classList.contains("review-scene")){
+    document.querySelector('meta[name="theme-color"]').setAttribute("content","#f4f1ea");
+    return;
+  }
   const scene=LEVEL_SCENES[level]||LEVEL_SCENES.DEFAULT;
   document.body.style.setProperty("--scene-a",scene[0]);
   document.body.style.setProperty("--scene-b",scene[1]);
@@ -735,12 +735,14 @@ function setLibraryScene(level){
 
 function go(name,after){
   withViewTransition(()=>{
+    document.body.classList.toggle("review-scene",name==="review");
     document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));
     $(name).classList.add("on");
     document.querySelectorAll("[data-page]").forEach(x=>x.classList.toggle("active",x.dataset.page===name));
 
     if(name==="library") renderLibrary();
     if(name==="review"){
+      if(libraryResizeObserver) libraryResizeObserver.disconnect();
       setLibraryScene("DEFAULT");
       renderStats();
       startReview();
@@ -1302,7 +1304,7 @@ function openDay(level,day,items){
       <button class="back" id="backDays">← ${level}</button>
       <div class="hero" style="margin-top:0">
         <h1 style="font-size:32px">${level} · ${dayLabel(normalizeDay(day))}</h1>
-        <p>Pilih bunpou untuk membaca lampiran contoh kalimat.</p>
+        <p>Pilih bunpou untuk membaca materi dan contoh kalimat.</p>
       </div>
     </div>
   `;
@@ -1570,7 +1572,7 @@ function renderStatusDetail(status){
   if(status==="learning") renderSrsLevels(allItems);
   renderStatusItems(shownItems);
 
-  document.querySelectorAll(".status-card").forEach(card=>{
+  document.querySelectorAll(".status-card[data-status]").forEach(card=>{
     const active=card.dataset.status===status;
     card.classList.toggle("active",active);
     card.setAttribute("aria-expanded",String(active));
@@ -1581,13 +1583,13 @@ function closeStatusDetail(){
   activeStatus=null;
   activeLearningLevel=null;
   $("statusDetail").classList.add("hide");
-  document.querySelectorAll(".status-card").forEach(card=>{
+  document.querySelectorAll(".status-card[data-status]").forEach(card=>{
     card.classList.remove("active");
     card.setAttribute("aria-expanded","false");
   });
 }
 
-document.querySelectorAll(".status-card").forEach(card=>{
+document.querySelectorAll(".status-card[data-status]").forEach(card=>{
   card.onclick=()=>{
     const status=card.dataset.status;
 
@@ -1982,7 +1984,7 @@ function validate(data){
 
     const pool=questionPool(d);
     if(pool.length!==d.examples.length){
-      throw Error(`${d.grammar}: semua contoh Lampiran wajib menjadi soal SRS (${pool.length}/${d.examples.length}).`);
+      throw Error(`${d.grammar}: semua contoh materi wajib menjadi soal SRS (${pool.length}/${d.examples.length}).`);
     }
   });
 }
