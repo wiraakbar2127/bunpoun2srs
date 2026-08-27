@@ -249,8 +249,13 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 #library:not(.level-overview) .back,#study .study>.back{color:#716d66}
 #library:not(.level-overview) .back:hover,#study .study>.back:hover{color:var(--text)}
 #study .sentinel,.review .queue{color:var(--muted)}
-#library:not(.level-overview) .day-card{min-height:168px;padding:24px 58px 24px 24px;display:flex;flex-direction:column;justify-content:center}
-#library:not(.level-overview) .day-card h3{font-size:19px}
+#library:not(.level-overview) .day-card{min-height:176px;padding:28px 58px 22px 24px;display:flex;flex-direction:column;justify-content:center;overflow:hidden;border-radius:9px 18px 18px 18px}
+#library:not(.level-overview) .day-card::before{content:"";position:absolute;left:0;top:0;width:42%;height:9px;border-radius:0 0 8px 0;background:#82a996;opacity:.9}
+#library:not(.level-overview) .day-card h3{font-size:21px}
+.day-folder-label{display:flex;align-items:center;gap:7px;margin-bottom:13px;color:#47715e;font-size:9px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+.day-folder-label span{padding:4px 7px;border-radius:6px;background:#dfeee6;color:#2f664e;letter-spacing:.08em}
+.day-folder-label small{font-size:9px;color:#789083}
+.day-folder-state{position:absolute;right:18px;top:54px;font-size:9px;font-weight:900;letter-spacing:.09em;color:#5d7769;text-transform:uppercase}
 .item{
   min-height:140px;
   padding:20px;
@@ -263,10 +268,22 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .item h3{margin-bottom:8px;font-size:17px;letter-spacing:-.02em}
 .item p{font-size:12px;line-height:1.65}
 .item.day-card{padding-right:54px}
-.item.day-unlocked{border-color:#d9e7df;background:rgba(255,255,255,.96)}
+.item.day-unlocked{border-color:#c7ddd1;background:linear-gradient(145deg,rgba(245,252,248,.98),rgba(230,243,236,.96));box-shadow:0 10px 26px rgba(50,94,73,.07)}
 .item.day-locked{border:1px dashed #d6d2c9;background:rgba(239,237,231,.72);opacity:.6;filter:none}
 .item.level-empty{background:rgba(239,237,231,.72);opacity:.55;filter:none}
 .lock-note{margin-top:10px!important;color:#8e8980!important;font-weight:650!important}
+.bunpou-card{position:relative;min-height:154px;padding:21px 20px 18px 72px!important;border-radius:16px!important;background:rgba(255,255,255,.94)!important}
+.bunpou-card::after{content:"";position:absolute;left:54px;top:18px;bottom:18px;width:1px;background:#ebe7df}
+.bunpou-doc-mark{position:absolute;left:16px;top:20px;width:27px;text-align:center;color:#8f4947}
+.bunpou-doc-mark span{width:27px;height:32px;display:grid;place-items:center;border:1px solid #e9cecb;border-radius:6px 6px 8px 8px;background:#fff3f2;font-family:"Noto Serif JP",serif;font-size:15px;font-weight:900}
+.bunpou-doc-mark small{display:block;margin-top:6px;color:#aaa49b;font-size:8px;font-weight:900;letter-spacing:.08em}
+.bunpou-card h3{padding-right:22px}
+.bunpou-card.bunpou-unlocked{border-color:#e4ded5;border-left:4px solid #bd5a56}
+.bunpou-card.bunpou-locked{border:1px dashed #d6d2c9!important;border-left:4px solid #c6c0b8!important;background:rgba(239,237,231,.78)!important;color:#8d8880;cursor:not-allowed;box-shadow:none;opacity:.68}
+.bunpou-card.bunpou-locked::after{background:#d9d4cb}
+.bunpou-card.bunpou-locked .bunpou-doc-mark span{border-color:#d7d2c9;background:#ebe8e1;color:#99938a}
+.bunpou-card.bunpou-locked:hover{transform:none!important;border-color:#d6d2c9!important;box-shadow:none!important}
+.bunpou-lock-note{margin-top:10px!important;padding-top:9px;border-top:1px dashed #d5d0c7;color:#817b72!important;font-size:10px!important;font-weight:750}
 .chips{gap:6px;margin-top:14px}
 .chip{padding:5px 8px;background:#f2f1ed;color:#7f7b74;font-size:10px;letter-spacing:.02em}
 .chip.green{background:#eaf6ef;color:var(--green)}
@@ -406,7 +423,7 @@ dialog::backdrop{background:rgba(24,23,20,.34);backdrop-filter:blur(5px)}
 .toast{bottom:28px;border:1px solid rgba(255,255,255,.1);border-radius:11px;background:rgba(23,23,21,.94);box-shadow:0 12px 30px rgba(23,23,21,.16);font-size:12px;backdrop-filter:blur(10px)}
 
 @media(hover:hover){
-  .item:not(.level-empty):not(.day-locked):hover{transform:translateY(-3px);border-color:#c9c6bd;box-shadow:var(--soft-shadow)}
+  .item:not(.level-empty):not(.day-locked):not(.bunpou-locked):hover{transform:translateY(-3px);border-color:#c9c6bd;box-shadow:var(--soft-shadow)}
 }
 
 @media(max-width:760px){
@@ -423,8 +440,9 @@ dialog::backdrop{background:rgba(24,23,20,.34);backdrop-filter:blur(5px)}
   .level-rail{--level-card-width:210px;margin:0;padding:24px calc(50% - var(--level-card-width)/2) 34px}
   #library.level-overview .level-card{min-height:270px;padding:18px}
   .level-name{margin-top:28px;font-size:58px}
-  #library:not(.level-overview) .day-card{min-height:150px;padding:19px 49px 19px 19px}
+  #library:not(.level-overview) .day-card{min-height:158px;padding:24px 49px 19px 19px}
   .item{min-height:132px;padding:16px}.item.day-card{padding-right:47px}.item h3{font-size:15px}
+  .bunpou-card{min-height:142px;padding:18px 15px 16px 65px!important}.bunpou-card::after{left:49px}.bunpou-doc-mark{left:13px;top:18px}
   .stats{grid-template-columns:repeat(3,1fr)}
   .review-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
   .srs-levels{grid-template-columns:repeat(6,minmax(44px,1fr))}
@@ -453,7 +471,8 @@ dialog::backdrop{background:rgba(24,23,20,.34);backdrop-filter:blur(5px)}
   #library.level-overview .level-card.is-active{transform:scale(1.04) translateY(-2px)}
   .level-name{margin-top:18px;font-size:48px}
   #library.level-overview .level-card p{margin:6px 0 9px;font-size:9px}.level-progress{margin-bottom:10px}.level-card-top span,.level-card-bottom span{font-size:8px}
-  #library:not(.level-overview) .day-card{min-height:135px}
+  #library:not(.level-overview) .day-card{min-height:145px}
+  .bunpou-card{min-height:132px}
   .item{min-height:118px}
   .hero h1{font-size:30px}
   .stats{border-radius:13px}.stat{padding:12px 7px}.stat small{font-size:8px}.stat b{font-size:20px}
@@ -545,8 +564,8 @@ dialog::backdrop{background:rgba(24,23,20,.34);backdrop-filter:blur(5px)}
 <section class="page" id="review">
   <div class="review">
     <div class="empty hide" id="reviewEmpty">
-      <h3>Soal SRS sudah habis.</h3>
-      <p>Belum ada review yang jatuh tempo saat ini.</p>
+      <h3 id="reviewEmptyTitle">Soal SRS sudah habis.</h3>
+      <p id="reviewEmptyText">Belum ada review yang jatuh tempo saat ini.</p>
       <button class="empty-refresh" id="refreshBtn" type="button"><span aria-hidden="true">↻</span> Refresh SRS</button>
     </div>
 
@@ -602,10 +621,10 @@ dialog::backdrop{background:rgba(24,23,20,.34);backdrop-filter:blur(5px)}
 <dialog id="startDialog">
   <div class="modal">
     <h2>読みました！</h2>
-    <p><b id="startName"></b> sudah selesai dibaca dan sekarang masuk ke SRS.</p>
+    <p id="startMessage"><b id="startName"></b><span id="startMessageText"> sudah selesai dibaca.</span></p>
     <div class="actions">
-      <button class="btn" id="stayBtn">Nanti</button>
-      <button class="btn red" id="startBtn">Mulai SRS</button>
+      <button class="btn" id="stayBtn">Kembali ke DAY</button>
+      <button class="btn red" id="startBtn">Bunpou Berikutnya →</button>
     </div>
   </div>
 </dialog>
@@ -674,6 +693,7 @@ let activeLearningLevel=null;
 let activeLibraryLevel="N2";
 let libraryResizeObserver=null;
 let libraryKeydownHandler=null;
+let nextStudyId=null;
 
 function load(k,f){
   try{
@@ -717,6 +737,22 @@ function sp(id,p){
 
 function deck(id){
   return decks.find(x=>x.id===id);
+}
+
+function dayItemsForDeck(d){
+  if(!d) return [];
+  const level=String(d.level||"").toUpperCase();
+  const day=String(normalizeDay(d.day));
+
+  return decks.filter(item=>
+    String(item.level||"").toUpperCase()===level &&
+    String(normalizeDay(item.day))===day
+  );
+}
+
+function isDeckDayComplete(d){
+  const items=dayItemsForDeck(d);
+  return items.length>0 && items.every(item=>gp(item.id).studied);
 }
 
 function isDue(d){
@@ -774,11 +810,12 @@ function ruby(seg,studyMode=false){
     return '<span id="answerMirror" class="sentence-blank">&nbsp;</span>';
   }
 
+  const text=segmentText(seg);
   let content=seg.reading
     ? studyMode
-      ? `<ruby>${esc(seg.text)}<rt>${esc(seg.reading)}</rt></ruby>`
-      : `<ruby class="furigana-toggle" tabindex="0" role="button" aria-label="Tampilkan furigana untuk ${esc(seg.text)}" aria-pressed="false">${esc(seg.text)}<rt>${esc(seg.reading)}</rt></ruby>`
-    : esc(seg.text);
+      ? `<ruby>${esc(text)}<rt>${esc(seg.reading)}</rt></ruby>`
+      : `<ruby class="furigana-toggle" tabindex="0" role="button" aria-label="Tampilkan furigana untuk ${esc(text)}" aria-pressed="false">${esc(text)}<rt>${esc(seg.reading)}</rt></ruby>`
+    : esc(text);
 
   if(studyMode && seg.target){
     content=`<span class="example-target">${content}</span>`;
@@ -976,6 +1013,7 @@ function renderLibrary(){
     const items=decks.filter(d=>String(d.level||"").toUpperCase()===level);
     const days=[...new Set(items.map(d=>normalizeDay(d.day)))].filter(v=>v!=="" && v!==null);
     const studied=items.filter(d=>gp(d.id).studied).length;
+    const questionCount=items.reduce((total,d)=>total+srsItemsForDeck(d).length,0);
     const dueCount=items.reduce((total,d)=>total+srsItemsForDeck(d).filter(isSrsItemDue).length,0);
     const isEmpty=items.length===0;
 
@@ -988,7 +1026,7 @@ function renderLibrary(){
     x.innerHTML=`
       <div class="level-card-top"><span>JLPT LEVEL</span><i>${isEmpty?"EMPTY":"OPEN"}</i></div>
       <strong class="level-name">${level}</strong>
-      <p>${days.length} DAY&nbsp;&nbsp;·&nbsp;&nbsp;${items.length} bunpou</p>
+      <p>${days.length} DAY&nbsp;&nbsp;·&nbsp;&nbsp;${items.length} bunpou&nbsp;&nbsp;·&nbsp;&nbsp;${questionCount} SRS</p>
       <div class="level-progress"><span style="width:${items.length?Math.round(studied/items.length*100):0}%"></span></div>
       <div class="level-card-bottom">
         <span>${studied} dipelajari</span>
@@ -1252,6 +1290,7 @@ function openLevel(level){
     dayKeys.forEach((day,index)=>{
       const list=dayMap[day];
       const srsOne=list.filter(d=>gp(d.id).level>=1).length;
+      const questionCount=list.reduce((total,d)=>total+srsItemsForDeck(d).length,0);
       const dueCount=list.reduce((total,d)=>total+srsItemsForDeck(d).filter(isSrsItemDue).length,0);
       const isUnlocked=unlockedDays[dayUnlockKey(level,day)]===true;
       const previousLabel=index>0 ? dayLabel(normalizeDay(dayKeys[index-1])) : "";
@@ -1260,11 +1299,13 @@ function openLevel(level){
       x.className=`item day-card ${isUnlocked?"day-unlocked":"day-locked"}`;
       x.setAttribute("aria-disabled",String(!isUnlocked));
       x.innerHTML=`
-        <h3>${isUnlocked?"🔓":"🔒"} ${dayLabel(normalizeDay(day))}</h3>
-        <p>${list.length} bunpou · ${srsOne}/${list.length} mencapai SRS 1</p>
+        <div class="day-folder-label"><span>DAY</span><small>Folder materi</small></div>
+        <h3>${dayLabel(normalizeDay(day))}</h3>
+        <p>${list.length} bunpou · ${questionCount} soal SRS · ${srsOne}/${list.length} tuntas SRS 1</p>
         <div class="chips">
           ${isUnlocked && dueCount?`<span class="chip red">${dueCount} due</span>`:""}
         </div>
+        <span class="day-folder-state">${isUnlocked?"Terbuka":"Terkunci"}</span>
         ${isUnlocked?"":`<p class="lock-note">Naikkan semua bunpou ${previousLabel} ke minimal SRS 1.</p>`}
         <button class="delete-day-btn" type="button" title="Hapus ${dayLabel(normalizeDay(day))}" aria-label="Hapus ${dayLabel(normalizeDay(day))}">×</button>
       `;
@@ -1330,29 +1371,38 @@ function openDay(level,day,items){
       <button class="back" id="backDays">← ${level}</button>
       <div class="hero" style="margin-top:0">
         <h1 style="font-size:32px">${level} · ${dayLabel(normalizeDay(day))}</h1>
-        <p>Pilih bunpou untuk membaca materi dan contoh kalimat.</p>
+        <p>Bunpou dibuka berurutan. Tekan Yomimashita pada materi sebelumnya untuk membuka materi berikutnya.</p>
       </div>
     </div>
   `;
 
-  items.forEach(d=>{
+  items.forEach((d,index)=>{
     const p=gp(d.id);
+    const previous=items[index-1]||null;
+    const isUnlocked=index===0 || gp(previous.id).studied;
     const x=document.createElement("div");
-    x.className="item";
+    x.className=`item bunpou-card ${isUnlocked?"bunpou-unlocked":"bunpou-locked"}`;
+    x.setAttribute("aria-disabled",String(!isUnlocked));
     x.innerHTML=`
+      <div class="bunpou-doc-mark"><span>文</span><small>${String(index+1).padStart(2,"0")}</small></div>
       <h3>${esc(d.grammar)}</h3>
-      <p>${esc(d.meaning||"")} · ${(d.examples||[]).length} contoh</p>
+      <p>${esc(d.meaning||"")} · ${(d.examples||[]).length} contoh · ${srsItemsForDeck(d).length} soal SRS</p>
       <div class="chips">
         <span class="chip ${p.studied?"green":""}">
-          ${p.studied?"✓ Yomimashita":"Belum dibaca"}
+          ${p.studied?"✓ Yomimashita":isUnlocked?"Siap dibaca":"Terkunci"}
         </span>
         ${p.studied?`<span class="chip">SRS ${p.level}/12</span>`:""}
       </div>
+      ${isUnlocked?"":`<p class="bunpou-lock-note">Selesaikan ${esc(previous.grammar)} dan tekan Yomimashita terlebih dahulu.</p>`}
       <button class="delete-btn" type="button">Hapus</button>
     `;
 
     x.onclick=e=>{
       if(e.target.closest(".delete-btn")) return;
+      if(!isUnlocked){
+        toast(`Tekan Yomimashita pada ${previous.grammar} terlebih dahulu`);
+        return;
+      }
       withViewTransition(()=>openStudy(d.id));
     };
 
@@ -1498,8 +1548,18 @@ $("yomiBtn").onclick=()=>{
   sp(studyId,p);
   ensureDeckQuestionProgress(d,true);
 
+  const dayItems=dayItemsForDeck(d);
+  const dayComplete=dayItems.every(item=>gp(item.id).studied);
+  const nextItem=dayItems.find(item=>!gp(item.id).studied) || null;
+  nextStudyId=nextItem?.id || null;
+
   $("yomiBtn").textContent="✓ 読みました · Sudah dibaca";
   $("startName").textContent=d.grammar;
+  $("startMessageText").textContent=dayComplete
+    ? " adalah bunpou terakhir. Semua materi dalam DAY ini sudah Yomimashita dan SRS sekarang terbuka."
+    : ` sudah selesai. Lanjutkan ke ${nextItem?.grammar||"bunpou berikutnya"}. SRS masih terkunci sampai seluruh bunpou selesai.`;
+  $("startBtn").dataset.action=dayComplete?"srs":"next";
+  $("startBtn").textContent=dayComplete?"Mulai SRS":"Bunpou Berikutnya →";
   $("startDialog").showModal();
 };
 
@@ -1524,12 +1584,22 @@ $("stayBtn").onclick=()=>{
 };
 
 $("startBtn").onclick=()=>{
+  const action=$("startBtn").dataset.action;
   $("startDialog").close();
+
+  if(action==="next" && nextStudyId){
+    const target=nextStudyId;
+    nextStudyId=null;
+    withViewTransition(()=>openStudy(target));
+    return;
+  }
+
+  nextStudyId=null;
   go("review");
 };
 
 function renderStats(){
-  const items=allSrsItems();
+  const items=allSrsItems().filter(isDeckDayComplete);
   $("stNew").textContent=items.filter(d=>srsProgress(d).studied && srsProgress(d).level===0).length;
   $("stLearning").textContent=items.filter(d=>srsProgress(d).studied && srsProgress(d).level>=1 && srsProgress(d).level<12).length;
   $("stMaster").textContent=items.filter(d=>srsProgress(d).level===12).length;
@@ -1539,7 +1609,7 @@ function renderStats(){
 }
 
 function decksByStatus(status){
-  const items=allSrsItems();
+  const items=allSrsItems().filter(isDeckDayComplete);
   if(status==="new") return items.filter(d=>srsProgress(d).studied && srsProgress(d).level===0);
   if(status==="learning") return items.filter(d=>srsProgress(d).studied && srsProgress(d).level>=1 && srsProgress(d).level<12);
   if(status==="mastered") return items.filter(d=>srsProgress(d).level===12);
@@ -1653,9 +1723,21 @@ function startReview(){
   ensureAllQuestionProgress();
   renderStats();
 
-  due=allSrsItems()
+  const allItems=allSrsItems();
+  due=allItems
     .filter(isSrsItemDue)
     .sort((a,b)=>(srsProgress(a).dueAt||0)-(srsProgress(b).dueAt||0));
+
+  const hasIncompleteDay=allItems.some(item=>
+    srsProgress(item).studied && !isDeckDayComplete(item)
+  );
+
+  $("reviewEmptyTitle").textContent=hasIncompleteDay && !due.length
+    ? "SRS masih terkunci."
+    : "Soal SRS sudah habis.";
+  $("reviewEmptyText").textContent=hasIncompleteDay && !due.length
+    ? "Lanjutkan membaca bunpou sampai materi terakhir dalam DAY dan tekan Yomimashita semuanya."
+    : "Belum ada review yang jatuh tempo saat ini.";
 
   $("reviewEmpty").classList.toggle("hide",due.length>0);
   $("reviewArea").classList.toggle("hide",!due.length);
@@ -1678,7 +1760,7 @@ function uniqueAccepted(values){
 
 function readingForAnswer(example,answer){
   const segments=example.segments||[];
-  const targets=segments.filter(seg=>seg.target);
+  const targets=segments.filter(isTargetSegment);
 
   if(targets.length && targets.some(seg=>seg.reading)){
     return targets.map(seg=>seg.reading || seg.text || seg.target || "").join("");
@@ -1703,9 +1785,151 @@ function readingForAnswer(example,answer){
   return "";
 }
 
-function makeQuestionFromExample(example,index=0,pairedQuestion=null){
+function segmentText(seg){
+  if(seg?.text!==undefined && seg?.text!==null) return String(seg.text);
+  return typeof seg?.target==="string" ? seg.target : "";
+}
+
+function isTargetSegment(seg){
+  return !!(
+    seg && (
+      seg.target===true ||
+      typeof seg.target==="string" ||
+      seg.isTarget===true ||
+      seg.is_target===true ||
+      seg.cloze===true ||
+      seg.highlight===true ||
+      seg.role==="answer" ||
+      seg.role==="target"
+    )
+  );
+}
+
+function normalizedTextMap(text){
+  let value="";
+  const offsets=[];
+
+  [...String(text??"")].forEach((char,index)=>{
+    const normalized=char
+      .normalize("NFKC")
+      .replace(/\s+/g,"")
+      .replace(/[〜～]/g,"")
+      .replace(/[ァ-ヶ]/g,ch=>String.fromCharCode(ch.charCodeAt(0)-0x60));
+
+    [...normalized].forEach(part=>{
+      value+=part;
+      offsets.push(index);
+    });
+  });
+
+  return {value,offsets};
+}
+
+function clozeSegmentsByAnswer(example,answer){
+  const source=example.segments||[];
+  const full=source.map(segmentText).join("");
+  const mappedFull=normalizedTextMap(full);
+  const wanted=norm(answer);
+
+  if(!wanted || !mappedFull.value) return null;
+
+  const normalizedStart=mappedFull.value.indexOf(wanted);
+  if(normalizedStart<0) return null;
+
+  const start=mappedFull.offsets[normalizedStart];
+  const end=mappedFull.offsets[normalizedStart+wanted.length-1]+1;
+  const result=[];
+  let cursor=0;
+  let blankInserted=false;
+
+  source.forEach(seg=>{
+    const text=segmentText(seg);
+    const segStart=cursor;
+    const segEnd=cursor+text.length;
+    cursor=segEnd;
+
+    if(segEnd<=start || segStart>=end){
+      result.push({...seg,text});
+      return;
+    }
+
+    const before=text.slice(0,Math.max(0,start-segStart));
+    const after=text.slice(Math.max(0,end-segStart));
+
+    if(before) result.push({text:before});
+    if(!blankInserted){
+      result.push({blank:true});
+      blankInserted=true;
+    }
+    if(after) result.push({text:after});
+  });
+
+  return blankInserted ? result : null;
+}
+
+function candidateAnswers(d,example){
+  const explicit=d.questions||[];
+  const values=[
+    example.answer,
+    example.answerReading,
+    example.furigana,
+    example.accepted||[],
+    explicit.map(q=>q.answer),
+    explicit.flatMap(q=>q.accepted||[]),
+    d.grammar
+  ].flat().filter(Boolean);
+
+  const grammar=String(d.grammar||"").trim();
+  if(grammar){
+    values.push(
+      grammar.replace(/[〜～]/g,""),
+      grammar.replace(/[（(][^）)]*[）)]/g,"").replace(/[〜～]/g,""),
+      grammar.replace(/[（）()〜～]/g,"")
+    );
+  }
+
+  return uniqueAccepted(values).sort((a,b)=>norm(b).length-norm(a).length);
+}
+
+function fallbackTarget(example){
+  const segments=example.segments||[];
+  const candidates=segments
+    .map((seg,index)=>({seg,index,text:segmentText(seg)}))
+    .filter(item=>item.text && /[ぁ-んァ-ヶ一-龯々ー]/.test(item.text))
+    .filter(item=>!/^\s*[。、！？!?]\s*$/.test(item.text));
+
+  if(!candidates.length) return null;
+
+  const useful=candidates.filter(item=>norm(item.text).length>=2 && norm(item.text).length<=16);
+  const picked=(useful.length?useful:candidates).at(-1);
+  const output=[];
+
+  segments.forEach((seg,index)=>{
+    if(index===picked.index) output.push({blank:true});
+    else output.push({...seg,text:segmentText(seg)});
+  });
+
+  return {answer:picked.text,segments:output};
+}
+
+function inferredQuestion(d,example){
+  for(const answer of candidateAnswers(d,example)){
+    const segments=clozeSegmentsByAnswer(example,answer);
+    if(segments) return {answer,segments};
+  }
+
+  return fallbackTarget(example);
+}
+
+function questionTranslation(value){
+  return typeof value==="string"
+    ? {before:value,highlight:"",after:""}
+    : (value||{before:"",highlight:"",after:""});
+}
+
+function makeQuestionFromExample(d,example,index=0,pairedQuestion=null){
   // Format JSON baru: examples menyimpan kalimat lengkap dan questions menyimpan versi cloze.
-  if(pairedQuestion && Array.isArray(pairedQuestion.segments) && pairedQuestion.segments.some(seg=>seg.blank)){
+  if(pairedQuestion?.answer && Array.isArray(pairedQuestion.segments) && pairedQuestion.segments.some(seg=>seg.blank)){
     const accepted=uniqueAccepted([
       pairedQuestion.answer,
       pairedQuestion.accepted||[],
@@ -1719,16 +1943,17 @@ function makeQuestionFromExample(example,index=0,pairedQuestion=null){
       answer:pairedQuestion.answer,
       accepted,
       segments:pairedQuestion.segments,
-      translation:pairedQuestion.translation || example.translation,
+      translation:questionTranslation(pairedQuestion.translation || example.translation),
       explanation:pairedQuestion.explanation || pairedQuestion.reason || example.explanation || ""
     };
   }
 
   // Format kompatibel lama: target bunpou ditandai langsung di segments example.
-  const targetSegments=(example.segments||[]).filter(seg=>seg.target);
-  if(!targetSegments.length) return null;
+  const targetSegments=(example.segments||[]).filter(isTargetSegment);
+  const inferred=targetSegments.length ? null : inferredQuestion(d,example);
+  if(!targetSegments.length && !inferred) return null;
 
-  const answer=example.answer || targetSegments.map(seg=>seg.text||seg.target||"").join("");
+  const answer=example.answer || inferred?.answer || targetSegments.map(segmentText).join("");
   const accepted=uniqueAccepted([
     answer,
     example.accepted||[],
@@ -1738,17 +1963,20 @@ function makeQuestionFromExample(example,index=0,pairedQuestion=null){
   ]);
 
   let blankInserted=false;
-  const segments=[];
-  (example.segments||[]).forEach(seg=>{
-    if(seg.target){
-      if(!blankInserted){
-        segments.push({blank:true});
-        blankInserted=true;
+  const segments=inferred?.segments || [];
+
+  if(!inferred){
+    (example.segments||[]).forEach(seg=>{
+      if(isTargetSegment(seg)){
+        if(!blankInserted){
+          segments.push({blank:true});
+          blankInserted=true;
+        }
+        return;
       }
-      return;
-    }
-    segments.push({...seg});
-  });
+      segments.push({...seg,text:segmentText(seg)});
+    });
+  }
 
   return {
     id:example.id || `example-${index+1}`,
@@ -1756,9 +1984,7 @@ function makeQuestionFromExample(example,index=0,pairedQuestion=null){
     accepted,
     segments,
     explanation:example.explanation || example.reason || "",
-    translation:typeof example.translation==="string"
-      ? {before:example.translation,highlight:"",after:""}
-      : example.translation
+    translation:questionTranslation(example.translation)
   };
 }
 
@@ -1766,7 +1992,7 @@ function questionPool(d){
   const explicit=d.questions||[];
   return (d.examples||[]).map((example,index)=>{
     const paired=explicit.find(q=>q.id && example.id && q.id===example.id) || explicit[index] || null;
-    return makeQuestionFromExample(example,index,paired);
+    return makeQuestionFromExample(d,example,index,paired);
   }).filter(Boolean);
 }
 
@@ -1792,6 +2018,7 @@ function srsProgress(item){
 }
 
 function isSrsItemDue(item){
+  if(!isDeckDayComplete(item)) return false;
   const p=srsProgress(item);
   return p.studied && p.level<12 && (!p.dueAt || p.dueAt<=Date.now());
 }
@@ -2089,14 +2316,10 @@ function validate(data){
 
       const paired=explicit.find(q=>q.id && example.id && q.id===example.id) || explicit[j] || null;
       const hasPaired=!!(paired && paired.answer && Array.isArray(paired.segments) && paired.segments.some(seg=>seg.blank));
-      const targets=example.segments.filter(seg=>seg.target);
+      const targets=example.segments.filter(isTargetSegment);
 
-      if(!hasPaired && !targets.length){
-        throw Error(`${d.grammar}, contoh ${j+1}: belum punya pasangan soal SRS. Tambahkan questions[] atau tandai target di example.`);
-      }
-
-      if(!hasPaired){
-        if(!example.answer) example.answer=targets.map(seg=>seg.text||seg.target||"").join("");
+      if(!hasPaired && targets.length){
+        if(!example.answer) example.answer=targets.map(segmentText).join("");
         if(!example.accepted?.length) example.accepted=[example.answer];
       }
     });
@@ -2133,7 +2356,8 @@ $("jsonFileInput").onchange=async e=>{
 
     const levels=[...new Set(data.map(d=>d.level))].join(", ");
     const days=[...new Set(data.map(d=>dayLabel(normalizeDay(d.day))))].join(", ");
-    toast(`${data.length} bunpou diupload · ${levels} · ${days}`);
+    const questionCount=data.reduce((total,d)=>total+questionPool(d).length,0);
+    toast(`${data.length} bunpou · ${questionCount} soal SRS · ${levels} · ${days}`);
   }catch(err){
     alert("File JSON tidak valid:\n\n"+err.message);
   }
