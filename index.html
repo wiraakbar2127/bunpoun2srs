@@ -720,8 +720,7 @@ function deck(id){
 }
 
 function isDue(d){
-  const p=gp(d.id);
-  return p.studied && p.level<12 && (!p.dueAt || p.dueAt<=Date.now());
+  return srsItemsForDeck(d).some(isSrsItemDue);
 }
 
 function withViewTransition(update){
@@ -977,7 +976,7 @@ function renderLibrary(){
     const items=decks.filter(d=>String(d.level||"").toUpperCase()===level);
     const days=[...new Set(items.map(d=>normalizeDay(d.day)))].filter(v=>v!=="" && v!==null);
     const studied=items.filter(d=>gp(d.id).studied).length;
-    const dueCount=items.filter(isDue).length;
+    const dueCount=items.reduce((total,d)=>total+srsItemsForDeck(d).filter(isSrsItemDue).length,0);
     const isEmpty=items.length===0;
 
     const x=document.createElement("button");
@@ -1253,7 +1252,7 @@ function openLevel(level){
     dayKeys.forEach((day,index)=>{
       const list=dayMap[day];
       const srsOne=list.filter(d=>gp(d.id).level>=1).length;
-      const dueCount=list.filter(isDue).length;
+      const dueCount=list.reduce((total,d)=>total+srsItemsForDeck(d).filter(isSrsItemDue).length,0);
       const isUnlocked=unlockedDays[dayUnlockKey(level,day)]===true;
       const previousLabel=index>0 ? dayLabel(normalizeDay(dayKeys[index-1])) : "";
 
@@ -1497,6 +1496,7 @@ $("yomiBtn").onclick=()=>{
   }
 
   sp(studyId,p);
+  ensureDeckQuestionProgress(d,true);
 
   $("yomiBtn").textContent="✓ 読みました · Sudah dibaca";
   $("startName").textContent=d.grammar;
@@ -1529,26 +1529,29 @@ $("startBtn").onclick=()=>{
 };
 
 function renderStats(){
-  $("stNew").textContent=decks.filter(d=>gp(d.id).studied && gp(d.id).level===0).length;
-  $("stLearning").textContent=decks.filter(d=>gp(d.id).studied && gp(d.id).level>=1 && gp(d.id).level<12).length;
-  $("stMaster").textContent=decks.filter(d=>gp(d.id).level===12).length;
-  $("stReady").textContent=decks.filter(isDue).length;
+  const items=allSrsItems();
+  $("stNew").textContent=items.filter(d=>srsProgress(d).studied && srsProgress(d).level===0).length;
+  $("stLearning").textContent=items.filter(d=>srsProgress(d).studied && srsProgress(d).level>=1 && srsProgress(d).level<12).length;
+  $("stMaster").textContent=items.filter(d=>srsProgress(d).level===12).length;
+  $("stReady").textContent=items.filter(isSrsItemDue).length;
 
   if(activeStatus) renderStatusDetail(activeStatus);
 }
 
 function decksByStatus(status){
-  if(status==="new") return decks.filter(d=>gp(d.id).studied && gp(d.id).level===0);
-  if(status==="learning") return decks.filter(d=>gp(d.id).studied && gp(d.id).level>=1 && gp(d.id).level<12);
-  if(status==="mastered") return decks.filter(d=>gp(d.id).level===12);
-  if(status==="ready") return decks.filter(isDue);
+  const items=allSrsItems();
+  if(status==="new") return items.filter(d=>srsProgress(d).studied && srsProgress(d).level===0);
+  if(status==="learning") return items.filter(d=>srsProgress(d).studied && srsProgress(d).level>=1 && srsProgress(d).level<12);
+  if(status==="mastered") return items.filter(d=>srsProgress(d).level===12);
+  if(status==="ready") return items.filter(isSrsItemDue);
   return [];
 }
 
 function statusItemLabel(d){
-  const p=gp(d.id);
+  const p=srsProgress(d);
   const location=`${String(d.level||"").toUpperCase()} · ${dayLabel(normalizeDay(d.day))}`;
-  return p.studied ? `${location} · SRS ${p.level}` : `${location} · Belum dipelajari`;
+  const example=d._questionIndex===undefined ? "" : ` · Contoh ${d._questionIndex+1}`;
+  return p.studied ? `${location}${example} · SRS ${p.level}` : `${location}${example} · Belum dipelajari`;
 }
 
 function renderStatusItems(items){
@@ -1573,7 +1576,7 @@ function renderSrsLevels(items){
 
   w.innerHTML=Array.from({length:12},(_,index)=>{
     const level=index+1;
-    const count=items.filter(d=>gp(d.id).level===level).length;
+    const count=items.filter(d=>srsProgress(d).level===level).length;
     return `
       <button class="srs-level ${activeLearningLevel===level?"active":""}" type="button" data-srs-level="${level}" style="--level-color:${colors[index]}" title="SRS ${level}: ${count} data">
         <span class="srs-circle">${level}</span><span class="srs-count">${count}</span>
@@ -1586,14 +1589,14 @@ function renderStatusDetail(status){
   const labels={new:"Belum dipelajari",learning:"Belajar",mastered:"Dikuasai",ready:"Siap di SRS"};
   const allItems=decksByStatus(status);
   const shownItems=status==="learning" && activeLearningLevel
-    ? allItems.filter(d=>gp(d.id).level===activeLearningLevel)
+    ? allItems.filter(d=>srsProgress(d).level===activeLearningLevel)
     : allItems;
 
   $("statusDetail").classList.remove("hide");
   $("statusDetailLabel").textContent=status==="learning" && activeLearningLevel
     ? `${labels[status]} · SRS ${activeLearningLevel}`
     : labels[status];
-  $("statusDetailCount").textContent=`${shownItems.length} data`;
+  $("statusDetailCount").textContent=`${shownItems.length} soal`;
   $("srsLevelBreakdown").classList.toggle("hide",status!=="learning");
 
   if(status==="learning") renderSrsLevels(allItems);
@@ -1647,11 +1650,12 @@ $("statusItems").onclick=e=>{
 };
 
 function startReview(){
+  ensureAllQuestionProgress();
   renderStats();
 
-  due=decks
-    .filter(isDue)
-    .sort((a,b)=>(gp(a.id).dueAt||0)-(gp(b.id).dueAt||0));
+  due=allSrsItems()
+    .filter(isSrsItemDue)
+    .sort((a,b)=>(srsProgress(a).dueAt||0)-(srsProgress(b).dueAt||0));
 
   $("reviewEmpty").classList.toggle("hide",due.length>0);
   $("reviewArea").classList.toggle("hide",!due.length);
@@ -1766,6 +1770,94 @@ function questionPool(d){
   }).filter(Boolean);
 }
 
+function srsProgressId(d,index){
+  return `${d.id}::srs-example::${index}`;
+}
+
+function srsItemsForDeck(d){
+  return questionPool(d).map((q,index)=>({
+    ...d,
+    _q:q,
+    _questionIndex:index,
+    _progressId:srsProgressId(d,index)
+  }));
+}
+
+function allSrsItems(){
+  return decks.flatMap(srsItemsForDeck);
+}
+
+function srsProgress(item){
+  return prog[item._progressId] || gp(item.id);
+}
+
+function isSrsItemDue(item){
+  const p=srsProgress(item);
+  return p.studied && p.level<12 && (!p.dueAt || p.dueAt<=Date.now());
+}
+
+function ensureDeckQuestionProgress(d,activate=false,persist=true){
+  const parent=gp(d.id);
+  let changed=false;
+
+  srsItemsForDeck(d).forEach(item=>{
+    let p=prog[item._progressId];
+
+    if(!p){
+      p={
+        studied:!!parent.studied,
+        level:0,
+        dueAt:parent.studied ? Date.now() : null,
+        q:0,
+        last:null,
+        lastAt:null
+      };
+      prog[item._progressId]=p;
+      changed=true;
+    }
+
+    if(activate){
+      if(!p.studied){
+        p.studied=true;
+        changed=true;
+      }
+      if(p.level<12 && !p.dueAt){
+        p.dueAt=Date.now();
+        changed=true;
+      }
+    }
+  });
+
+  if(changed && persist) save();
+  return changed;
+}
+
+function ensureAllQuestionProgress(){
+  let changed=false;
+  decks.forEach(d=>{
+    if(ensureDeckQuestionProgress(d,false,false)) changed=true;
+  });
+  if(changed) save();
+}
+
+function syncDeckProgress(d){
+  const items=srsItemsForDeck(d);
+  if(!items.length) return;
+
+  const states=items.map(item=>srsProgress(item));
+  const parent=gp(d.id);
+  parent.studied=states.some(p=>p.studied);
+  parent.level=Math.min(...states.map(p=>p.level||0));
+
+  const pending=states
+    .filter(p=>p.studied && p.level<12)
+    .map(p=>p.dueAt)
+    .filter(value=>value!==undefined && value!==null);
+
+  parent.dueAt=pending.length ? Math.min(...pending) : null;
+  sp(d.id,parent);
+}
+
 function question(d){
   const p=gp(d.id);
   const qs=questionPool(d);
@@ -1783,13 +1875,11 @@ function renderCard(){
   enterToNext=false;
   retry11=false;
 
-  const p=gp(current.id);
-  const q=question(current);
+  const p=gp(current._progressId);
+  const q=current._q;
 
-  current._q=q;
-
-  $("levelBadge").textContent=`SRS ${p.level} / 12`;
-  $("queueText").textContent=`${due.length} review tersisa`;
+  $("levelBadge").textContent=`SRS ${p.level} / 12 · Contoh ${current._questionIndex+1}`;
+  $("queueText").textContent=`${due.length} soal SRS tersisa`;
 
   track(p.level);
 
@@ -1845,7 +1935,7 @@ function submit(){
   if(!a.value.trim()) return;
 
   const q=current._q;
-  const p=gp(current.id);
+  const p=gp(current._progressId);
 
   const accepted=q.accepted?.length ? q.accepted : [q.answer];
   const ok=accepted.some(x=>norm(x)===norm(a.value));
@@ -1881,10 +1971,11 @@ function correct(a,p){
     ?null
     :Date.now()+(INTERVAL[old]||INTERVAL[10]);
 
-  sp(current.id,p);
+  sp(current._progressId,p);
+  syncDeckProgress(current);
 
   track(p.level);
-  $("levelBadge").textContent=`SRS ${p.level} / 12`;
+  $("levelBadge").textContent=`SRS ${p.level} / 12 · Contoh ${current._questionIndex+1}`;
 
   $("questionCard").className="card result-ok";
   $("nextReview").className="next-review";
@@ -1912,10 +2003,11 @@ function wrong(a,p){
   p.lastAt=Date.now();
   p.dueAt=Date.now()+WRONG;
 
-  sp(current.id,p);
+  sp(current._progressId,p);
+  syncDeckProgress(current);
 
   track(p.level);
-  $("levelBadge").textContent=`SRS ${p.level} / 12`;
+  $("levelBadge").textContent=`SRS ${p.level} / 12 · Contoh ${current._questionIndex+1}`;
 
   $("questionCard").className="card result-bad";
   $("nextReview").className="next-review";
@@ -2035,6 +2127,7 @@ $("jsonFileInput").onchange=async e=>{
     ];
 
     save();
+    ensureAllQuestionProgress();
     renderLibrary();
     renderStats();
 
@@ -2055,6 +2148,7 @@ function toast(s){
   setTimeout(()=>t.classList.remove("on"),1800);
 }
 
+ensureAllQuestionProgress();
 renderLibrary();
 renderStats();
 </script>
