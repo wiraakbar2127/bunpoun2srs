@@ -125,15 +125,15 @@ dialog::backdrop{background:rgba(30,20,18,.42);backdrop-filter:blur(3px)}
 }
 
 html{scroll-behavior:smooth}
-@property --scene-a{syntax:"<color>";inherits:true;initial-value:#071d16}
-@property --scene-b{syntax:"<color>";inherits:true;initial-value:#123f30}
-@property --scene-c{syntax:"<color>";inherits:true;initial-value:#356d55}
-@property --scene-glow{syntax:"<color>";inherits:true;initial-value:rgba(111,181,147,.24)}
+@property --scene-a{syntax:"<color>";inherits:true;initial-value:#eef5f1}
+@property --scene-b{syntax:"<color>";inherits:true;initial-value:#d9e8e0}
+@property --scene-c{syntax:"<color>";inherits:true;initial-value:#b9d2c5}
+@property --scene-glow{syntax:"<color>";inherits:true;initial-value:rgba(255,255,255,.46)}
 body{
-  --scene-a:#071d16;
-  --scene-b:#123f30;
-  --scene-c:#356d55;
-  --scene-glow:rgba(111,181,147,.24);
+  --scene-a:#eef5f1;
+  --scene-b:#d9e8e0;
+  --scene-c:#b9d2c5;
+  --scene-glow:rgba(255,255,255,.46);
   min-height:100vh;
   background:
     radial-gradient(circle at 13% 3%,rgba(255,255,255,.13),transparent 27%),
@@ -196,7 +196,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .btn.red{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 5px 15px rgba(217,71,69,.18)}
 .btn.red:hover{background:#c83e3c;transform:translateY(-1px)}
 .icon-btn{width:38px;height:38px;border-radius:10px}
-.icon-btn svg{width:18px;height:18px}
+.icon-btn svg{display:block;width:18px;height:18px}
+.icon-btn .upload-svg{fill:currentColor;stroke:none}
 
 .page{padding-top:0}
 .page.on{animation:pageIn .32s cubic-bezier(.2,.8,.2,1)}
@@ -214,12 +215,12 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 #library.level-overview.on{min-height:calc(100vh - 110px);display:flex;align-items:center;padding:0;position:relative;overflow:visible;border:0;border-radius:0;background:transparent;color:#fff;box-shadow:none}
 #library.level-overview.on::before{display:none}
 #library.level-overview #libraryGrid{max-width:none;min-width:0;min-height:auto;padding:40px 0 70px;position:relative;z-index:1;display:grid;grid-template-columns:minmax(235px,.72fr) minmax(0,1.7fr);align-items:center;gap:clamp(28px,5vw,66px)}
-.library-intro{min-width:0;align-self:center;max-width:330px;text-shadow:0 2px 20px rgba(0,0,0,.16)}
-.library-kicker{display:block;margin-bottom:24px;font-size:11px;font-weight:800;letter-spacing:.22em;color:rgba(255,255,255,.62)}
+.library-intro{min-width:0;align-self:center;max-width:330px;color:#202823;text-shadow:none}
+.library-kicker{display:block;margin-bottom:24px;font-size:11px;font-weight:800;letter-spacing:.22em;color:rgba(32,40,35,.56)}
 .library-intro h1{margin:0;font-size:clamp(62px,8vw,104px);font-weight:760;line-height:.88;letter-spacing:-.075em}
-.library-intro p{margin:26px 0 18px;max-width:300px;color:rgba(255,255,255,.72);font-size:13px;line-height:1.75}
-.library-levels-label{font-size:10px;font-weight:850;letter-spacing:.13em;color:rgba(255,255,255,.48)}
-.carousel-hint{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:rgba(255,255,255,.62);font-size:10px;font-weight:750;letter-spacing:.045em}.carousel-hint span{display:grid;place-items:center;width:24px;height:24px;border:1px solid rgba(255,255,255,.18);border-radius:50%;background:rgba(255,255,255,.08)}
+.library-intro p{margin:26px 0 18px;max-width:300px;color:rgba(32,40,35,.68);font-size:13px;line-height:1.75}
+.library-levels-label{font-size:10px;font-weight:850;letter-spacing:.13em;color:rgba(32,40,35,.5)}
+.carousel-hint{display:flex;align-items:center;gap:8px;margin-bottom:12px;color:rgba(32,40,35,.62);font-size:10px;font-weight:750;letter-spacing:.045em}.carousel-hint span{display:grid;place-items:center;width:24px;height:24px;border:1px solid rgba(32,40,35,.18);border-radius:50%;background:rgba(255,255,255,.34)}
 .level-rail{--level-card-width:clamp(185px,22vw,230px);width:100%;max-width:100%;min-width:0;position:relative;display:flex;align-items:center;gap:18px;overflow-x:auto;overflow-y:hidden;padding:34px max(18px,calc(50% - var(--level-card-width)/2)) 42px;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-inline:contain;cursor:grab;user-select:none;-webkit-user-select:none}
 .level-rail::-webkit-scrollbar{display:none}
 .level-rail.is-dragging{cursor:grabbing;scroll-snap-type:none;scroll-behavior:auto}
@@ -241,11 +242,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .level-progress{position:relative;z-index:1;height:3px;margin-bottom:15px;border-radius:99px;background:rgba(255,255,255,.18);overflow:hidden}.level-progress span{display:block;height:100%;border-radius:inherit;background:#fff}
 .level-card-bottom span{font-size:9px;color:rgba(255,255,255,.62)}.level-card-bottom b{font-size:10px;color:#fff}
 #library:not(.level-overview) #libraryGrid{grid-template-columns:repeat(3,minmax(250px,1fr));gap:15px}
-#library:not(.level-overview) .hero h1,#study .study>h1,.review-hero .hero h1{color:#fff;text-shadow:0 2px 18px rgba(0,0,0,.13)}
-#library:not(.level-overview) .hero p,#study .study>.meaning,.review-hero .hero p{color:rgba(255,255,255,.72)}
-#library:not(.level-overview) .back,#study .study>.back{color:rgba(255,255,255,.7)}
-#library:not(.level-overview) .back:hover,#study .study>.back:hover{color:#fff}
-#study .sentinel,.review .queue{color:rgba(255,255,255,.65)}
+#library:not(.level-overview) .hero h1,#study .study>h1,.review-hero .hero h1{color:var(--text);text-shadow:none}
+#library:not(.level-overview) .hero p,#study .study>.meaning,.review-hero .hero p{color:var(--muted)}
+#library:not(.level-overview) .back,#study .study>.back{color:#716d66}
+#library:not(.level-overview) .back:hover,#study .study>.back:hover{color:var(--text)}
+#study .sentinel,.review .queue{color:var(--muted)}
 #library:not(.level-overview) .day-card{min-height:168px;padding:24px 58px 24px 24px;display:flex;flex-direction:column;justify-content:center}
 #library:not(.level-overview) .day-card h3{font-size:19px}
 .item{
@@ -500,7 +501,7 @@ dialog::backdrop{background:rgba(24,23,20,.34);backdrop-filter:blur(5px)}
     <button class="btn active" data-page="library">Home</button>
     <button class="btn" data-page="review">SRS</button>
     <button class="btn red icon-btn" id="uploadJsonBtn" type="button" title="Upload JSON" aria-label="Upload JSON">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+      <svg class="upload-svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21h14v-2H5v2zm7-18L5.33 9.67h3.84V16h5.66V9.67h3.84L12 3z"/></svg>
     </button>
     <input class="hide" id="jsonFileInput" type="file" accept=".json,application/json">
   </div>
@@ -637,12 +638,12 @@ const INTERVAL=[
 const WRONG=10*60000;
 
 const LEVEL_SCENES={
-  N1:["#151017","#332332","#60445a","rgba(145,91,131,.22)"],
-  N2:["#071d16","#123f30","#356d55","rgba(111,181,147,.24)"],
-  N3:["#0a1d27","#194052","#47788c","rgba(104,176,205,.22)"],
-  N4:["#24190f","#4b321d","#88613c","rgba(219,162,96,.20)"],
-  N5:["#271416","#512b2d","#86544e","rgba(222,126,117,.20)"],
-  DEFAULT:["#071d16","#123f30","#356d55","rgba(111,181,147,.24)"]
+  N1:["#f5eff6","#e6d9e7","#cdbbce","rgba(255,255,255,.44)"],
+  N2:["#eef5f1","#d9e8e0","#b9d2c5","rgba(255,255,255,.46)"],
+  N3:["#eef5f8","#d7e7ed","#b7d2dc","rgba(255,255,255,.46)"],
+  N4:["#f8f4ed","#ebdfcd","#d7c3a5","rgba(255,255,255,.43)"],
+  N5:["#f8f0f0","#ead9d8","#d4b9b6","rgba(255,255,255,.43)"],
+  DEFAULT:["#eef5f1","#d9e8e0","#b9d2c5","rgba(255,255,255,.46)"]
 };
 
 const $=id=>document.getElementById(id);
