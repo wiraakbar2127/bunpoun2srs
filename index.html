@@ -1,4 +1,4 @@
-<!doctype html>
+!doctype html>
 <html lang="id">
 <head>
 <meta charset="utf-8">
@@ -150,13 +150,13 @@ body{
   overflow-x:hidden;
   transition:--scene-a .55s ease,--scene-b .55s ease,--scene-c .55s ease,--scene-glow .55s ease;
 }
-.scene-layer{--layer-image:none;--layer-position:center center;--layer-size:cover;--layer-mobile-position:center center;--layer-mobile-size:cover;--layer-darkness:.76;position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;visibility:hidden;overflow:hidden;transition:none;will-change:opacity}
+.scene-layer{--layer-image:none;--layer-position:center center;--layer-size:cover;--layer-mobile-position:center center;--layer-mobile-size:cover;--layer-zoom:1;--layer-darkness:.76;position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;visibility:hidden;overflow:hidden;transition:none;will-change:opacity}
 body.level-scene .scene-layer{transition:opacity .55s cubic-bezier(.22,.72,.2,1),visibility 0s linear .55s}
 body.level-scene .scene-layer.is-active{opacity:1;visibility:visible;transition-delay:0s}
 .scene-layer.is-preparing{opacity:0!important;visibility:hidden!important;transition:none!important}
 body.scene-instant .scene-layer{transition:none!important}
 .scene-layer::after{content:"";position:absolute;pointer-events:none}
-.scene-layer::after{inset:0;background-image:linear-gradient(rgba(0,0,0,var(--layer-darkness)),rgba(0,0,0,var(--layer-darkness))),var(--layer-image);background-position:center,var(--layer-position);background-size:cover,var(--layer-size);background-repeat:no-repeat}
+.scene-layer::after{inset:0;background-image:linear-gradient(rgba(0,0,0,var(--layer-darkness)),rgba(0,0,0,var(--layer-darkness))),var(--layer-image);background-position:center,var(--layer-position);background-size:cover,var(--layer-size);background-repeat:no-repeat;transform:scale(var(--layer-zoom));transform-origin:center}
 body.review-scene{
   background:#f4f1ea;
   color:var(--text);
@@ -895,8 +895,9 @@ function applySceneToLayer(layer,scene,level){
   layer.style.setProperty("--layer-image",scene[4]);
   layer.style.setProperty("--layer-position",scene[5]);
   layer.style.setProperty("--layer-mobile-position",scene[6]);
-  layer.style.setProperty("--layer-size",level==="N1"?"112% auto":"cover");
-  layer.style.setProperty("--layer-mobile-size",level==="N1"?"auto 112%":"cover");
+  layer.style.setProperty("--layer-size","cover");
+  layer.style.setProperty("--layer-mobile-size","cover");
+  layer.style.setProperty("--layer-zoom",level==="N1"?"1.1":"1");
   layer.style.setProperty("--layer-darkness",.76);
 }
 
